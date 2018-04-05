@@ -12,9 +12,14 @@ public class Counter {
   public Counter() {
     this.valueIn =  new ArrayList<Double>();
     this.valueOut =  new ArrayList<Double>();
-    this.counter = -1;
+    this.counter = 0;
   }
 
+  /**
+   * Vrati hodnotu, ktera je pripravena pro vstupni port s indexem 'index'.
+   * @param index Index na kterem je ocekavana hodnota.
+   * @return  Vraci nactenou hodnotu nebo null, pokud neni k dispozici hodnota.
+   */
   public Double GetValueIn(Integer index) {
     if(this.valueIn.size() <= index) {
       //throw new ArithmeticException("GetValueIn");
@@ -23,6 +28,11 @@ public class Counter {
     return this.valueIn.get(index);
   }
 
+  /**
+   * Nastavi hodnotu na vystup na ocekavany dany index.
+   * @param index Index na kery bude ulozena hodnota.
+   * @param value Hodnota, ktera bude ulozena.
+   */
   public void SetValueOut(Integer index, Double value) {
     while(this.valueOut.size() <= index) {
       this.valueOut.add(null);
@@ -30,16 +40,41 @@ public class Counter {
     this.valueOut.set(index, value);
   }
 
+  /**
+   * Vrati hodnotu, ktera je nyni na vystupu pro port s indexem 'index'.
+   * @param index Index na kterem je ocekavana hodnota.
+   * @return  Vraci nactenou hodnotu nebo null, pokud neni k dispozici hodnota.
+   */
+  public Double GetValueOut(Integer index) {
+    if(this.valueOut.size() <= index) {
+      return null;
+    }
+    return this.valueOut.get(index);
+  }
+
+  /**
+   * Funkce prehodi vystupni hodnoty na vstupni a vystup vycisti a inkrementuje citac.
+   */
   public void SetOut2In() {
     ArrayList<Double> tmp = this.valueIn;
     this.valueIn = this.valueOut;
     this.valueOut = tmp;
     this.valueOut.clear();
+    this.counter++;
   }
 
-  public void Step(IOperation operator) {
-    SetOut2In();
-    this.counter++;
+  /**
+   * Pokud 'swap' je true tak se nejprve vykona prehozeni vystupu na vstupy a inkrementuje se citac.
+   * Funkce zjisti jake vstupy ocekava 'operator' a pripravi mu je z aktualnich vstupu.
+   * Nasledne zavola operaci operatoru a
+   * vracenou hodnotu ulozi do vystupu na pozice dane vystupnimi porty operatoru.
+   * @param operator Operator s jehoz vstupy, vystupy a operaci se pracuje.
+   * @param swap Urcuje zda se zmeni vystupy na vstupy.
+   */
+  public void Step(IOperation operator, boolean swap) {
+    if(swap) {
+      SetOut2In();
+    }
 
     ArrayList<Integer> portsIn = operator.GetPortsIn();
     ArrayList<Double> valuesInput = new ArrayList<Double>();
@@ -58,9 +93,15 @@ public class Counter {
 
   }
 
-  public void Step(ArrayList<IOperation> operators) {
+  /**
+   * Provadi stejne ukony jako Step(IOperation operator, boolean swap),
+   * ale postupne pro vsechny bloky v listu.
+   * @param operators List operatoru.
+   * @param swap Urcuje zda se budou menit vystupy na vstupy.
+   */
+  public void Step(ArrayList<IOperation> operators, boolean swap) {
     for(IOperation operator: operators) {
-      this.Step(operator);
+      this.Step(operator, swap);
     }
   }
 

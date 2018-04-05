@@ -65,9 +65,11 @@ public class CounterTest {
   @Test
   public void Test_Sets_and_Get_one_time() {
     counter.SetValueOut(1, 1.1);
+    Double value1 = counter.GetValueOut(1);
     counter.SetOut2In();
-    Double d = counter.GetValueIn(1);
-    assertTrue( 1.1==d);
+    Double value2 = counter.GetValueIn(1);
+    assertEquals(value1, value2);
+    assertEquals((Double)1.1, value2);
   }
   @Test
   public void Test_Sets_and_Get_more_time() {
@@ -97,40 +99,38 @@ public class CounterTest {
 
   @Test
   public void Test_Step_one_block() {
-    assertEquals(counter.counter, (Integer)(-1));
-    counter.Step(blokGetOne);
-    assertEquals(counter.counter, (Integer)0);
-    counter.SetOut2In();
+    assertEquals(counter.counter, (Integer)(0));
+    counter.Step(blokGetOne, true);
+    assertEquals(counter.counter, (Integer)1);
     Double d;
-    d = counter.GetValueIn(1);
+    d = counter.GetValueOut(1);
     assertEquals((Double)1.0, d);
-    d = counter.GetValueIn(3);
+    d = counter.GetValueOut(3);
     assertEquals((Double)1.0, d);
   }
 
   @Test
   public void Test_Step_counter_two_Step() {
-    assertEquals(counter.counter, (Integer)(-1));
-    counter.Step(blokGetOne);
-    assertEquals(counter.counter, (Integer)0);
-    counter.Step(blokGetOne);
+    assertEquals(counter.counter, (Integer)(0));
+    counter.Step(blokGetOne, true);
     assertEquals(counter.counter, (Integer)1);
+    counter.Step(blokGetOne, true);
+    assertEquals(counter.counter, (Integer)2);
   }
 
   @Test
   public void Test_Step_two_block() {
-    assertEquals(counter.counter, (Integer)(-1));
-    counter.Step(blokGetOne);
-    assertEquals(counter.counter, (Integer)0);
-    counter.Step(blokPlus);
+    assertEquals(counter.counter, (Integer)(0));
+    counter.Step(blokGetOne, true);
     assertEquals(counter.counter, (Integer)1);
-    counter.SetOut2In();
+    counter.Step(blokPlus, true);
+    assertEquals(counter.counter, (Integer)2);
     Double d;
-    d = counter.GetValueIn(1);
+    d = counter.GetValueOut(1);
     assertEquals((Double)2.0, d);
-    d = counter.GetValueIn(2);
+    d = counter.GetValueOut(2);
     assertEquals((Double)2.0, d);
-    d = counter.GetValueIn(3);
+    d = counter.GetValueOut(3);
     assertEquals((Double)2.0, d);
   }
 
