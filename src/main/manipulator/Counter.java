@@ -7,7 +7,7 @@ import java.util.ArrayList;
 public class Counter {
   private ArrayList<Double> valueIn;
   private ArrayList<Double> valueOut;
-  private Integer counter;
+  public Integer counter;
 
   public Counter() {
     this.valueIn =  new ArrayList<Double>();
@@ -17,14 +17,15 @@ public class Counter {
 
   public Double GetValueIn(Integer index) {
     if(this.valueIn.size() <= index) {
-      throw new ArithmeticException("GetValueIn");
+      //throw new ArithmeticException("GetValueIn");
+      return null;
     }
     return this.valueIn.get(index);
   }
 
   public void SetValueOut(Integer index, Double value) {
     while(this.valueOut.size() <= index) {
-      this.valueOut.add(0.0); 
+      this.valueOut.add(null);
     }
     this.valueOut.set(index, value);
   }
@@ -35,8 +36,10 @@ public class Counter {
     this.valueOut = tmp;
     this.valueOut.clear();
   }
+
   public void Step(IOperation operator) {
     SetOut2In();
+    this.counter++;
 
     ArrayList<Integer> portsIn = operator.GetPortsIn();
     ArrayList<Double> valuesInput = new ArrayList<Double>();
@@ -54,6 +57,7 @@ public class Counter {
     }
 
   }
+
   public void Step(ArrayList<IOperation> operators) {
     for(IOperation operator: operators) {
       this.Step(operator);
