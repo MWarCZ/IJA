@@ -111,7 +111,7 @@ public class Schema {
 
   //endregion
 
-  //region Function for work with list of list of block
+  //region Functions for work with list of list of block
 
   /**
    * Funkce vrati pozadovany sloupec s bloky. Pokud je index sloupce vetsi
@@ -164,16 +164,41 @@ public class Schema {
    * mezi poslednim sloupcem a novym sloupcem kam bude blok vlozen budou zaplnena prazdnymi sloupci.
    * Pokud je index sloupce zaporny bude vyhozena vyjimka 'ArrayIndexOutOfBoundsException'.
    * @param columnIndex Index sloupce do ktereho bude blok vlozen.
-   * @param blok Blok ktery bude vlozen do sloupce.
+   * @param block Blok ktery bude vlozen do sloupce.
    */
-  public void AddBlock(int columnIndex, IOperation blok) {
+  public void AddBlock(int columnIndex, IOperation block) {
     if(columnIndex < 0) {
       throw new ArrayIndexOutOfBoundsException("Zaporny index sloupce.");
     }
     if(this.blocks.size() <= columnIndex) {
       this.AddEmptyColumnOfBlocks(columnIndex);
     }
-    this.blocks.get(columnIndex).add(blok);
+    this.blocks.get(columnIndex).add(block);
+  }
+
+  //endregion
+
+  //region Functions for run simulation
+
+  public void SimulationReset() {
+    counter.SetOut2In();
+    counter.SetOut2In();
+    counter.counter = 0;
+  }
+
+  public void SimulationStep() {
+    ArrayList<IOperation> list = GetBlocksColumn(counter.counter);
+    if(list != null) {
+      counter.Step(list,false);
+    }
+  }
+
+  public void SimulationRun() {
+    ArrayList<IOperation> list = GetBlocksColumn(counter.counter);
+    while(list != null) {
+      counter.Step(list,false);
+      list = GetBlocksColumn(counter.counter);
+    }
   }
 
   //endregion
