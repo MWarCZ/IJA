@@ -2,10 +2,11 @@
 package test;
 
 import main.manipulator.Counter;
+import main.manipulator.IOperation;
 
 import static org.junit.Assert.*;
 
-import main.manipulator.IOperation;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.Before;
 
@@ -13,6 +14,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class CounterTest {
+
+  @BeforeClass
+  public static void PrintClassName() {
+    System.out.println("^^^ CounterTest ^^^");
+  }
+
   private Counter counter;
   private IOperation blokGetOne;
   private IOperation blokPlus;
