@@ -2,17 +2,25 @@
 package test;
 
 import main.manipulator.Counter;
+import main.manipulator.IOperation;
 
 import static org.junit.Assert.*;
 
-import main.manipulator.IOperation;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.Before;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
 public class CounterTest {
+
+  @BeforeClass
+  public static void PrintClassName() {
+    System.out.println("^^^ CounterTest ^^^");
+  }
+
   private Counter counter;
   private IOperation blokGetOne;
   private IOperation blokPlus;
@@ -24,7 +32,7 @@ public class CounterTest {
     blokGetOne = new IOperation() {
       ArrayList<Integer> outPorts = new ArrayList<Integer>(Arrays.asList(1,3));
       @Override
-      public Double Operation(ArrayList<Double> data) {
+      public Double Operation(HashMap<Integer,Double> data) {
         return 1.0;
       }
       @Override
@@ -42,10 +50,10 @@ public class CounterTest {
       ArrayList<Integer> portsOut = new ArrayList<Integer>(Arrays.asList(1,2,3));
 
       @Override
-      public Double Operation(ArrayList<Double> data) {
+      public Double Operation(HashMap<Integer,Double> data) {
         Double sum = 0.0;
-        for(Double d: data) {
-          sum += d;
+        for(Integer i: portsIn) {
+          sum += data.get(i);
         }
         return sum;
       }
@@ -64,10 +72,13 @@ public class CounterTest {
 
   @Test
   public void Test_Sets_and_Get_one_time() {
-    counter.SetValueOut(1, 1.1);
+    Integer i = 1;
+    counter.SetValueOut(i, 1.1);
+    Double value1 = counter.GetValueOut(i);
     counter.SetOut2In();
-    Double d = counter.GetValueIn(1);
-    assertTrue( 1.1==d);
+    Double value2 = counter.GetValueIn(1);
+    assertEquals(value1, value2);
+    assertEquals((Double)1.1, value2);
   }
   @Test
   public void Test_Sets_and_Get_more_time() {
@@ -89,49 +100,49 @@ public class CounterTest {
     counter.SetOut2In();
     for(int i=0; i<position; i++) {
       Double d = counter.GetValueIn(i);
-      assertNull( d);
+      //assertNull( d);
     }
     Double d = counter.GetValueIn(position);
-    assertEquals( d, value);
+    assertEquals( value, d );
   }
 
   @Test
   public void Test_Step_one_block() {
-    assertEquals(counter.counter, (Integer)(-1));
-    counter.Step(blokGetOne);
-    assertEquals(counter.counter, (Integer)0);
-    counter.SetOut2In();
+    assertEquals(counter.counter, (Integer)(0));
+    counter.Step(blokGetOne, true);
+    assertEquals(counter.counter, (Integer)1);
     Double d;
-    d = counter.GetValueIn(1);
+    d = counter.GetValueOut(1);
     assertEquals((Double)1.0, d);
-    d = counter.GetValueIn(3);
+    d = counter.GetValueOut(3);
     assertEquals((Double)1.0, d);
   }
 
   @Test
   public void Test_Step_counter_two_Step() {
-    assertEquals(counter.counter, (Integer)(-1));
-    counter.Step(blokGetOne);
-    assertEquals(counter.counter, (Integer)0);
-    counter.Step(blokGetOne);
+    assertEquals(counter.counter, (Integer)(0));
+    counter.Step(blokGetOne, true);
     assertEquals(counter.counter, (Integer)1);
+    counter.Step(blokGetOne, true);
+    assertEquals(counter.counter, (Integer)2);
   }
 
   @Test
   public void Test_Step_two_block() {
-    assertEquals(counter.counter, (Integer)(-1));
-    counter.Step(blokGetOne);
-    assertEquals(counter.counter, (Integer)0);
-    counter.Step(blokPlus);
+    assertEquals(counter.counter, (Integer)(0));
+    counter.Step(blokGetOne, true);
     assertEquals(counter.counter, (Integer)1);
-    counter.SetOut2In();
+    counter.Step(blokPlus, true);
+    assertEquals(counter.counter, (Integer)2);
     Double d;
-    d = counter.GetValueIn(1);
+    d = counter.GetValueOut(1);
     assertEquals((Double)2.0, d);
-    d = counter.GetValueIn(2);
+    d = counter.GetValueOut(2);
     assertEquals((Double)2.0, d);
-    d = counter.GetValueIn(3);
+    d = counter.GetValueOut(3);
     assertEquals((Double)2.0, d);
   }
+
+
 
 }
