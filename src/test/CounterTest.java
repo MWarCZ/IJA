@@ -12,6 +12,7 @@ import org.junit.Before;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
 public class CounterTest {
 
@@ -71,8 +72,9 @@ public class CounterTest {
 
   @Test
   public void Test_Sets_and_Get_one_time() {
-    counter.SetValueOut(1, 1.1);
-    Double value1 = counter.GetValueOut(1);
+    Integer i = 1;
+    counter.SetValueOut(i, 1.1);
+    Double value1 = counter.GetValueOut(i);
     counter.SetOut2In();
     Double value2 = counter.GetValueIn(1);
     assertEquals(value1, value2);
@@ -98,10 +100,10 @@ public class CounterTest {
     counter.SetOut2In();
     for(int i=0; i<position; i++) {
       Double d = counter.GetValueIn(i);
-      assertNull( d);
+      //assertNull( d);
     }
     Double d = counter.GetValueIn(position);
-    assertEquals( d, value);
+    assertEquals( value, d );
   }
 
   @Test
@@ -140,5 +142,7 @@ public class CounterTest {
     d = counter.GetValueOut(3);
     assertEquals((Double)2.0, d);
   }
+
+
 
 }

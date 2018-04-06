@@ -3,15 +3,16 @@ package main.manipulator;
 
 import main.manipulator.IOperation;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Counter {
-  private ArrayList<Double> valueIn;
-  private ArrayList<Double> valueOut;
+  private HashMap<Integer,Double> valueIn;
+  private HashMap<Integer,Double> valueOut;
   public Integer counter;
 
   public Counter() {
-    this.valueIn =  new ArrayList<Double>();
-    this.valueOut =  new ArrayList<Double>();
+    this.valueIn = new HashMap<Integer,Double>();
+    this.valueOut = new HashMap<Integer,Double>();
     this.counter = 0;
   }
 
@@ -21,10 +22,10 @@ public class Counter {
    * @return  Vraci nactenou hodnotu nebo null, pokud neni k dispozici hodnota.
    */
   public Double GetValueIn(Integer index) {
-    if(this.valueIn.size() <= index) {
-      //throw new ArithmeticException("GetValueIn");
-      return null;
-    }
+//    if(this.valueIn.size() <= index) {
+//      //throw new ArithmeticException("GetValueIn");
+//      return null;
+//    }
     return this.valueIn.get(index);
   }
 
@@ -34,10 +35,10 @@ public class Counter {
    * @param value Hodnota, ktera bude ulozena.
    */
   public void SetValueOut(Integer index, Double value) {
-    while(this.valueOut.size() <= index) {
-      this.valueOut.add(null);
-    }
-    this.valueOut.set(index, value);
+//    while(this.valueOut.size() <= index) {
+//      this.valueOut.add(null);
+//    }
+    this.valueOut.put(index, value);
   }
 
   /**
@@ -46,9 +47,9 @@ public class Counter {
    * @return  Vraci nactenou hodnotu nebo null, pokud neni k dispozici hodnota.
    */
   public Double GetValueOut(Integer index) {
-    if(this.valueOut.size() <= index) {
-      return null;
-    }
+//    if(this.valueOut.size() <= index) {
+//      return null;
+//    }
     return this.valueOut.get(index);
   }
 
@@ -56,7 +57,7 @@ public class Counter {
    * Funkce prehodi vystupni hodnoty na vstupni a vystup vycisti a inkrementuje citac.
    */
   public void SetOut2In() {
-    ArrayList<Double> tmp = this.valueIn;
+    HashMap<Integer,Double> tmp = this.valueIn;
     this.valueIn = this.valueOut;
     this.valueOut = tmp;
     this.valueOut.clear();
