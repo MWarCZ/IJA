@@ -5,6 +5,7 @@ import main.manipulator.IOperation;
 
 import java.lang.String;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Block implements IOperation {
   protected ArrayList<Integer> portsIn;
@@ -19,7 +20,7 @@ public class Block implements IOperation {
     portsOut =  new ArrayList<Integer>();
   }
 
-  public Double Operation(ArrayList<Double> data) {
+  public Double Operation(HashMap<Integer,Double> data) {
     return 0.0;
   }
   public ArrayList<Integer> GetPortsIn() {
@@ -29,4 +30,17 @@ public class Block implements IOperation {
     return this.portsOut;
   }
 
+  @Override
+  public boolean equals(Object obj) {
+    if(obj instanceof Block){
+      Block block = (Block)obj;
+      return ( (this.portsIn.equals(block.portsIn)) && (this.portsOut.equals(block.portsOut)));
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return portsIn.hashCode() + portsOut.hashCode();
+  }
 }
