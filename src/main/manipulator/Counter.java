@@ -78,10 +78,10 @@ public class Counter {
     }
 
     ArrayList<Integer> portsIn = operator.GetPortsIn();
-    ArrayList<Double> valuesInput = new ArrayList<Double>();
+    HashMap<Integer,Double> valuesInput = new HashMap<Integer,Double>();
 
     for(Integer portIndex: portsIn) {
-      valuesInput.add( this.GetValueIn(portIndex) );
+      valuesInput.put( portIndex, this.GetValueIn(portIndex) );
     }
 
     Double valueOut = operator.Operation(valuesInput); 

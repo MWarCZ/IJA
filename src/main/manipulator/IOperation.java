@@ -2,14 +2,15 @@
 package main.manipulator;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public interface IOperation {
   /**
    * Funkce vykona operaci nad daty a vrati vysup. 
-   * @param  data Vstupni hodnoty.
+   * @param  data Vstupni hodnoty. Jako klice jsou pouzity cisla vstupnich portu.
    * @return      Vystupni hodnota.
    */
-  public Double Operation(ArrayList<Double> data);
+  public Double Operation(HashMap<Integer,Double> data);
 
   /**
    * Funkce pro ziskani pole s indexy vstupnich portu.

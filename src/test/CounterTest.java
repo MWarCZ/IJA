@@ -32,7 +32,7 @@ public class CounterTest {
     blokGetOne = new IOperation() {
       ArrayList<Integer> outPorts = new ArrayList<Integer>(Arrays.asList(1,3));
       @Override
-      public Double Operation(ArrayList<Double> data) {
+      public Double Operation(HashMap<Integer,Double> data) {
         return 1.0;
       }
       @Override
@@ -50,10 +50,10 @@ public class CounterTest {
       ArrayList<Integer> portsOut = new ArrayList<Integer>(Arrays.asList(1,2,3));
 
       @Override
-      public Double Operation(ArrayList<Double> data) {
+      public Double Operation(HashMap<Integer,Double> data) {
         Double sum = 0.0;
-        for(Double d: data) {
-          sum += d;
+        for(Integer i: portsIn) {
+          sum += data.get(i);
         }
         return sum;
       }

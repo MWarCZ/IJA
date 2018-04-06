@@ -11,6 +11,7 @@ import org.junit.Before;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
 public class SchemaTest {
 
@@ -30,7 +31,7 @@ public class SchemaTest {
       ArrayList<Integer> outPorts = new ArrayList<Integer>(Arrays.asList(1,3));
       ArrayList<Integer> inPorts = new ArrayList<>();
       @Override
-      public Double Operation(ArrayList<Double> data) {
+      public Double Operation(HashMap<Integer,Double> data) {
         return 1.0;
       }
       @Override
