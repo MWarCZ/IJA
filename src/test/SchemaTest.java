@@ -61,7 +61,7 @@ public class SchemaTest {
 
     schema = new Schema("jmeno");
     assertEquals("jmeno", schema.GetName());
-    assertEquals("", schema.GetPath());
+    assertEquals(null, schema.GetPath());
   }
 
   @Test
