@@ -17,6 +17,13 @@ public class BlockConstant extends Block {
 
   private Double constValue = 0.0;
 
+  public BlockConstant(Integer positionStart, Integer positionEnd) {
+    super(positionStart, positionEnd);
+  }
+  public BlockConstant() {
+    super();
+  }
+
   public Double GetConstValue() {
     return constValue;
   }

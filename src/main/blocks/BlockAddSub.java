@@ -11,6 +11,13 @@ import java.util.HashMap;
  */
 public class BlockAddSub extends Block {
 
+  public BlockAddSub(Integer positionStart, Integer positionEnd) {
+    super(positionStart, positionEnd);
+  }
+  public BlockAddSub() {
+    super();
+  }
+
   @Override
   public boolean IsPossibleGroupIn(Integer group) {
     return ( group >= 0 && group <=1 );

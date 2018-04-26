@@ -19,20 +19,48 @@ public class Block implements IOperation,IDomSaveLoad{
   protected ArrayList<Integer> portsOut;
   protected ArrayList<Integer> groupIn;
   protected ArrayList<Integer> groupOut;
+
+  protected Integer positionStart;
+  protected Integer positionEnd;
   /**
    *Constructor
    */
-  public Block(ArrayList<Integer> portsIn, ArrayList<Integer> portsOut){
-    this.portsIn = portsIn;
-    this.portsOut = portsOut;
-    this.groupIn = new ArrayList<Integer>(portsIn.size());
-    this.groupOut = new ArrayList<Integer>(portsOut.size());
+  public Block(Integer positionStart, Integer positionEnd) {
+    portsIn = new ArrayList<Integer>();
+    portsOut = new ArrayList<Integer>();
+    groupIn = new ArrayList<Integer>();
+    groupOut = new ArrayList<Integer>();
+    this.SetPosition(positionStart, positionEnd);
   }
   public Block(){
     portsIn = new ArrayList<Integer>();
     portsOut = new ArrayList<Integer>();
     groupIn = new ArrayList<Integer>();
     groupOut = new ArrayList<Integer>();
+    this.SetPosition(0, 0);
+  }
+
+  public void SetPosition(Integer value1, Integer value2) {
+    if(value1 < value2) {
+      this.positionStart = value1;
+      this.positionEnd = value2;
+    }
+    else {
+      this.positionStart = value2;
+      this.positionEnd = value1;
+    }
+  }
+  public Integer GetPositionStart() {
+    return positionStart;
+  }
+  public void SetPositionStart(Integer value) {
+    this.SetPosition(value, this.positionEnd);
+  }
+  public Integer GetPositionEnd() {
+    return positionEnd;
+  }
+  public void SetPositionEnd(Integer value) {
+    this.SetPosition(this.positionStart, value);
   }
 
   /**
@@ -353,6 +381,17 @@ public class Block implements IOperation,IDomSaveLoad{
           portsOut.add(Integer.parseInt(tmp));
           groupOut.add(group);
         }
+        else if(elem.getTagName().equals("position") ) {
+
+          Integer tmpStart = 0, tmpEnd = 0;
+          if(elem.hasAttribute("start") ) {
+            tmpStart = Integer.parseInt( elem.getAttribute("start") );
+          }
+          if(elem.hasAttribute("end") ) {
+            tmpEnd = Integer.parseInt( elem.getAttribute("end") );
+          }
+          this.SetPosition(tmpStart, tmpEnd);
+        }
       }
     }
 
@@ -365,6 +404,12 @@ public class Block implements IOperation,IDomSaveLoad{
   @Override
   public void SaveToDomElement(Element parent, Document dom) {
     Element port;
+
+    port = dom.createElement("position");
+    port.setAttribute("start", this.positionStart.toString() );
+    port.setAttribute("end", this.positionEnd.toString() );
+    parent.appendChild(port);
+
     for(Integer i=0; i<this.portsIn.size(); i++) {
       port = dom.createElement("in");
       port.setAttribute("group", this.groupIn.get(i).toString() );

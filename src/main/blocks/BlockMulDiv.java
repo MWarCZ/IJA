@@ -11,6 +11,13 @@ import java.util.HashMap;
  */
 public class BlockMulDiv extends Block {
 
+  public BlockMulDiv(Integer positionStart, Integer positionEnd) {
+    super(positionStart, positionEnd);
+  }
+  public BlockMulDiv() {
+    super();
+  }
+
   @Override
   public boolean IsPossibleGroupIn(Integer group) {
     return ( group >= 0 && group <=1 );

@@ -9,6 +9,13 @@ import java.util.HashMap;
  */
 public class BlockSwitch extends Block {
 
+  public BlockSwitch(Integer positionStart, Integer positionEnd) {
+    super(positionStart, positionEnd);
+  }
+  public BlockSwitch() {
+    super();
+  }
+
   @Override
   public boolean IsPossibleGroupIn(Integer group) {
     for(Integer existGroup : this.groupIn) {
