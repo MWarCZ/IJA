@@ -239,11 +239,13 @@ public class BlockTest {
       check++;
     }
   }
+
   @Test(expected = PortException.class)
   public void Test_AddPortOut_Exception_DuplicitPort() throws PortException {
     block.AddPortOut(10, 0);
     block.AddPortOut(10, 0);
   }
+
   @Test(expected = PortGroupException.class)
   public void Test_AddPortOut_Exception_UnexistGroup() throws PortException {
     block.AddPortOut(0, 20);
@@ -266,6 +268,7 @@ public class BlockTest {
       check+=2;
     }
   }
+
   @Test
   public void Test_RemovePortOut_Unexist() {
     block.RemovePortOut(1);
@@ -323,7 +326,6 @@ public class BlockTest {
     block.AddPortOut(1,0);
     block.ChangeGroupOut(1,-10);
   }
-
 
   // ----------
 
