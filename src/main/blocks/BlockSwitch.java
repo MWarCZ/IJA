@@ -23,7 +23,7 @@ public class BlockSwitch extends Block {
         return false;
       }
     }
-    return true;
+    return (group >= 0);
   }
   @Override
   public boolean IsPossibleGroupOut(Integer group) {
