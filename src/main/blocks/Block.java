@@ -50,15 +50,19 @@ public class Block implements IOperation,IDomSaveLoad{
       this.positionEnd = value1;
     }
   }
+
   public Integer GetPositionStart() {
     return positionStart;
   }
+
   public void SetPositionStart(Integer value) {
     this.SetPosition(value, this.positionEnd);
   }
+
   public Integer GetPositionEnd() {
     return positionEnd;
   }
+
   public void SetPositionEnd(Integer value) {
     this.SetPosition(this.positionStart, value);
   }
@@ -126,7 +130,7 @@ public class Block implements IOperation,IDomSaveLoad{
         "Blok '%s' neni pripojen k vstupnimu portu '%d'. ",
         this.getClass().getSimpleName(), port ));
     }
-    return groupIn.get(port);
+    return groupIn.get(index);
   }
 
   /**
@@ -253,7 +257,7 @@ public class Block implements IOperation,IDomSaveLoad{
         "Blok '%s' neni pripojen k vstupnimu portu '%d'. ",
         this.getClass().getSimpleName(), port ));
     }
-    return groupOut.get(port);
+    return groupOut.get(index);
   }
 
   /**
