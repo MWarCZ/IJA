@@ -118,9 +118,9 @@ public class CounterTest {
 
   @Test
   public void Test_Step_one_block() throws CycleException, MissingValueException {
-    assertEquals(counter.counter, (Integer)(0));
+    assertEquals(counter.counter, (Integer)(-1));
     counter.Step(blokGetOne, true);
-    assertEquals(counter.counter, (Integer)1);
+    assertEquals(counter.counter, (Integer)0);
     Double d;
     d = counter.GetValueOut(1);
     assertEquals((Double)1.0, d);
@@ -130,20 +130,20 @@ public class CounterTest {
 
   @Test
   public void Test_Step_counter_two_Step() throws CycleException, MissingValueException {
-    assertEquals(counter.counter, (Integer)(0));
+    assertEquals(counter.counter, (Integer)(-1));
+    counter.Step(blokGetOne, true);
+    assertEquals(counter.counter, (Integer)0);
     counter.Step(blokGetOne, true);
     assertEquals(counter.counter, (Integer)1);
-    counter.Step(blokGetOne, true);
-    assertEquals(counter.counter, (Integer)2);
   }
 
   @Test
   public void Test_Step_two_block() throws CycleException, MissingValueException {
-    assertEquals(counter.counter, (Integer)(0));
+    assertEquals(counter.counter, (Integer)(-1));
     counter.Step(blokGetOne, true);
-    assertEquals(counter.counter, (Integer)1);
+    assertEquals(counter.counter, (Integer)0);
     counter.Step(blokPlus, true);
-    assertEquals(counter.counter, (Integer)2);
+    assertEquals(counter.counter, (Integer)1);
     Double d;
     d = counter.GetValueOut(1);
     assertEquals((Double)2.0, d);
