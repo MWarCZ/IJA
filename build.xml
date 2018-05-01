@@ -12,6 +12,8 @@
 	<property name="test.lib.dir"	location="lib"/>
 	<property name="test.build.dir"	location="build/test"/>
 
+	<property name="doc.dir"	location="doc/api"/>
+
 	<property name="doc"	location="doc"/>
 	<property name="dest-c"	location="dest-client"/>
 	<property name="dest-s"	location="dest-server"/>
@@ -92,7 +94,35 @@
 		<delete dir="${test.build.dir}"/>
 		<delete dir="${dest-c}"/>
 		<delete dir="${dest-s}"/>
+		<delete dir="${doc.dir}"/>
 		<!-- <delete dir="${doc}"/> -->
 	</target>
+	
+	<target name="doc" description="Popisek">
+		<delete dir="${doc.dir}"/>
+		<mkdir dir="${doc.dir}"/>
+
+		<javadoc destdir="${doc.dir}"
+			author="true"
+			version="true"
+			use="true"
+			windowtitle="IJA Dokumentace">
+
+			<fileset dir="src" defaultexcludes="yes">
+				<include name="main/**"/>
+
+				<exclude name="main/ui/**"/>
+				<exclude name="main/xxx.py"/>
+			</fileset>
+
+			<doctitle><![CDATA[<h1>IJA Dokumentace</h1>]]></doctitle>
+			<bottom><![CDATA[<i>Copyright &#169; 2018 Dummy Corp. All Rights Reserved.</i>]]></bottom>
+
+			<tag name="todo" scope="all" description="To do:"/>
+
+			<link offline="true" href="https://docs.oracle.com/javase/8/docs/api/" packagelistLoc="C:\tmp"/>
+			<link href="https://docs.oracle.com/javase/8/docs/api/"/>
+		</javadoc>
+</target>
 
 </project>
