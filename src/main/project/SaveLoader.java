@@ -39,8 +39,9 @@ public class SaveLoader {
    * Funkce pro ulozeni schematu do souboru XML.
    * @param filename Nazev XML souboru. (Cesta k souboru.)
    * @param schema Schema ktere se bude ukladat.
+   * @throws IOException Pokud dojde k chybe pri ukladani souboru.
    */
-    public void WriteXML3(String filename, Schema schema) {
+    public void WriteXML3(String filename, Schema schema) throws IOException {
       Document dom;
       Element e = null;
 
@@ -90,11 +91,14 @@ public class SaveLoader {
 
         } catch (TransformerException te) {
           System.out.println(te.getMessage());
+          throw new IOException(te.getMessage());
         } catch (IOException ioe) {
           System.out.println(ioe.getMessage());
+          throw ioe;
         }
       } catch (ParserConfigurationException pce) {
         System.out.println("UsersXML: Error trying to instantiate DocumentBuilder " + pce);
+        throw new IOException(pce.getMessage());
       }
     }
 
@@ -102,11 +106,13 @@ public class SaveLoader {
    * Funkce pro nacteni schematu ze souboru XML.
    * @param filename Nazev XML souboru. (Cesta k souboru.)
    * @return Vraci nactene schema.
+   * @throws IOException Pokud dojde k chybe pri zpracovavani souboru.
    */
-    public Schema ReadXML3(String filename) {
+    public Schema ReadXML3(String filename) throws IOException {
       // Vytvareni noveho schematu.
       Schema schema = new Schema("tmp");
       ArrayList<ArrayList<IOperation>> blocks = schema.blocks;
+      schema.SetPath(filename);
 
       Document dom;
       // Vytvori instanci DocumentBuilderFactory
@@ -179,21 +185,32 @@ public class SaveLoader {
 
         return schema;
 
-      } catch (ParserConfigurationException pce) {
+      }
+      catch (ParserConfigurationException pce) {
         System.out.println(pce.getMessage());
-      } catch (SAXException se) {
+        throw new IOException(pce.getMessage());
+      }
+      catch (SAXException se) {
         System.out.println(se.getMessage());
-      } catch (IOException ioe) {
+        throw new IOException(se.getMessage());
+      }
+      catch (IOException ioe) {
         System.err.println(ioe.getMessage());
-      } catch (ClassNotFoundException e) {
+        throw new IOException(ioe.getMessage());
+      }
+      catch (ClassNotFoundException e) {
         e.printStackTrace(); // class bloku nebyla nalezena
-      } catch (IllegalAccessException e) {
+        throw new IOException(e.getMessage());
+      }
+      catch (IllegalAccessException e) {
         e.printStackTrace(); // nelze vytvorit instanci tridy
-      } catch (InstantiationException e) {
+        throw new IOException(e.getMessage());
+      }
+      catch (InstantiationException e) {
         e.printStackTrace(); // nelze vytvorit instanci tridy
+        throw new IOException(e.getMessage());
       }
 
-      return null;
     }
 
 }
