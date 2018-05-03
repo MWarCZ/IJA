@@ -6,14 +6,12 @@ import java.io.IOException;
 import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.Button;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Line;
 import main.blocks.Block;
 
 /**
@@ -21,6 +19,8 @@ import main.blocks.Block;
  */
 public class BlockControl extends GridPane {
     public Block block;
+    public Line cabel;
+    public Tooltip info;
     protected Integer rows = 1;
 
     //@FXML private TextField textField;

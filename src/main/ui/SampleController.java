@@ -5,9 +5,11 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Bounds;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.Tooltip;
 import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -124,6 +126,7 @@ public class SampleController implements Initializable {
         cc.menu_remove.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                parret.getChildren().remove(cc.cabel);
                 parret.getChildren().remove(cc);
             }
         });
@@ -132,6 +135,17 @@ public class SampleController implements Initializable {
             public void handle(MouseEvent event) {
                 //add line from end of center button to beginning of next center button
                 //hide rightButton - in case line was removed
+                cc.cabel = new Line(cc.rightButton.getLayoutX(),0,cc.rightButton.getLayoutX()*2-16,0);  //magical numbers B)
+                cc.cabel.setTranslateX(cc.rightButton.getLayoutX());    //move to center
+                cc.cabel.setStrokeWidth(7);
+                cc.rightButton.setVisible(false);
+
+                cc.info = new Tooltip();
+                cc.info.setText("Hello");   //vypis aktualnich hodnot
+                Tooltip.install(cc.cabel, cc.info);
+
+                parret.add(cc.cabel, colIndex, rowIndex);
+
             }
         });
         cc.block_add.setOnAction(new EventHandler<ActionEvent>() {
