@@ -57,11 +57,12 @@ public class SampleController implements Initializable {
         /*Input ITEM*/
         if(colIndex == 0){
             cc.centerButton.setText("In");
-            //window for input values
+            //input values dialog
             TextInputDialog inputDialog = new TextInputDialog();
             inputDialog.setTitle("Set of values");
             inputDialog.setHeaderText("Example: '0,1,2,3'");
             inputDialog.setContentText("Insert values here:");
+            cc.disableForInputBlock();  //set ContextMenu for input block
             cc.centerButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent event) {
