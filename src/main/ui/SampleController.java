@@ -4,9 +4,12 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.input.ContextMenuEvent;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.*;
@@ -15,6 +18,7 @@ import main.blocks.Block;
 import main.ui.component.BlockControl;
 
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class SampleController implements Initializable {
@@ -50,7 +54,24 @@ public class SampleController implements Initializable {
         cc.setBlock(block);
 
         gridPane.add(cc, colIndex, rowIndex);
-
+        /*Input ITEM*/
+        if(colIndex == 0){
+            cc.centerButton.setText("In");
+            //window for input values
+            TextInputDialog tmp = new TextInputDialog();
+            cc.centerButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent event) {
+                    if (event.getButton() == MouseButton.PRIMARY) {
+                        Optional<String> result = tmp.showAndWait();
+                        if (result.isPresent()) {
+                            //Input
+                            System.out.println("Your name: " + result.get());
+                        }
+                    }
+                }
+            });
+        }
         cc.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
