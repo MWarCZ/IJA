@@ -58,15 +58,18 @@ public class SampleController implements Initializable {
         if(colIndex == 0){
             cc.centerButton.setText("In");
             //window for input values
-            TextInputDialog tmp = new TextInputDialog();
+            TextInputDialog inputDialog = new TextInputDialog();
+            inputDialog.setTitle("Set of values");
+            inputDialog.setHeaderText("Example: '0,1,2,3'");
+            inputDialog.setContentText("Insert values here:");
             cc.centerButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent event) {
                     if (event.getButton() == MouseButton.PRIMARY) {
-                        Optional<String> result = tmp.showAndWait();
-                        if (result.isPresent()) {
+                        Optional<String> set = inputDialog.showAndWait();
+                        if (set.isPresent()) {
                             //Input
-                            System.out.println("Your name: " + result.get());
+                            System.out.println("Values: " + set.get());
                         }
                     }
                 }
