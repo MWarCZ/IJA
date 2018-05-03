@@ -39,7 +39,6 @@ public class BlockControl extends GridPane {
     @FXML public Button centerButton;
     @FXML public Button rightButton;
 
-
   public BlockControl() {
     FXMLLoader fxmlLoader = new FXMLLoader(
       getClass().getResource(
@@ -106,6 +105,14 @@ public class BlockControl extends GridPane {
   public void setPositionEnd(Integer value) {
     block.SetPositionEnd(value);
     ChangeRows(block.GetPositionStart(), block.GetPositionEnd());
+  }
+  public void disableForInputBlock(){
+      this.block_add.setDisable(true);
+      this.block_sub.setDisable(true);
+      this.block_mul.setDisable(true);
+      this.block_div.setDisable(true);
+      this.block_constant.setDisable(true);
+      this.block_switch.setDisable(true);
   }
 
 //    public String getText() {

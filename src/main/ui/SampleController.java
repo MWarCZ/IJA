@@ -130,6 +130,8 @@ public class SampleController implements Initializable {
         cc.rightButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
+                //add line from end of center button to beginning of next center button
+                //hide rightButton - in case line was removed
             }
         });
         cc.block_add.setOnAction(new EventHandler<ActionEvent>() {
