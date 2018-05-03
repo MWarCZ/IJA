@@ -133,8 +133,7 @@ public class SampleController implements Initializable {
         cc.rightButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                //add line from end of center button to beginning of next center button
-                //hide rightButton - in case line was removed
+                if(!cc.checkNextBlock(parret, rowIndex, colIndex+1))  return;
                 cc.cabel = new Line(cc.rightButton.getLayoutX(),0,cc.rightButton.getLayoutX()*2-16,0);  //magical numbers B)
                 cc.cabel.setTranslateX(cc.rightButton.getLayoutX());    //move to center
                 cc.cabel.setStrokeWidth(7);

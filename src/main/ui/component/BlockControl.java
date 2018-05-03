@@ -6,6 +6,7 @@ import java.io.IOException;
 import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.GridPane;
@@ -132,5 +133,25 @@ public class BlockControl extends GridPane {
         System.out.println("The button was clicked!");
     }
 
+    /**
+     * Funkce prohledá pole, zda-li existuje blok navazující na blok volající tuto metodu
+     * @param gridPane
+     * @param row
+     * @param col
+     * @return Boolean
+     */
+    public boolean checkNextBlock(GridPane gridPane, int row, int col){
+        int tmpRow;
+        int tmpCol;
+      for(Node next : gridPane.getChildren()){
+          if(GridPane.getRowIndex(next) == null)    tmpRow = 0;
+          else  tmpRow = GridPane.getRowIndex(next);
+          if(GridPane.getColumnIndex(next) == null) tmpCol = 0;
+          else  tmpCol = GridPane.getColumnIndex(next);
+
+          if(tmpRow == row && tmpCol == col) return true;
+      }
+      return false;
+    }
 
 }
