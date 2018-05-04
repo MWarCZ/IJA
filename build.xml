@@ -1,20 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<project name="IJA" default="compile" basedir=".">
+<project name="IJA" default="compile" basedir="." xmlns:fx="javafx:com.sun.javafx.tools.ant">
 	<description>
 		Bla bla bla ... projekt
 	</description>
 
+	<target name="p">
+		<echo message="env java_home: ${env.JAVA_HOME}"></echo>
+		<echo message="java_home: ${java.home}"></echo>
+		<echo message="ant_home: ${ant.home}"></echo>
+		<echo message="main src dir: ${main.src.dir}"></echo>
+	</target>
+
+	<taskdef resource="com/sun/javafx/tools/ant/antlib.xml"      
+            uri="javafx:com.sun.javafx.tools.ant"
+            classpath="${java.home}/../lib/ant-javafx.jar"/>
+
+	<!-- Adresare pro apku - zdroj, knihovny, cil -->
 	<property name="main.src.dir"	location="src/main"/>
 	<property name="main.lib.dir"	location="lib"/>
 	<property name="main.build.dir"	location="build/main"/>
 
+	<!-- Adresare pro testy - zdroj, knihovny, cil -->
 	<property name="test.src.dir"	location="src/test"/>
 	<property name="test.lib.dir"	location="lib"/>
 	<property name="test.build.dir"	location="build/test"/>
 
-	<property name="doc.dir"	location="doc/api"/>
+	<!-- Adresar pro atomaticky generovanou dokumentaci -->
+	<property name="doc.dir"	location="doc"/>
 
-	<property name="doc"	location="doc"/>
+	<!-- Slozka pro umisteni vysledne aplikace -->
+	<property name="distro.dir" location="dest-client"/>
+
+	<!-- Nazev tridy aplikace v JavaFX. -->
+	<property name="app.main.class" value="main.ui.Main"/>
+	<!-- Nazev vystupniho souboru aplikace. -->
+	<property name="app.filename" value="ija-client.jar"/>
+	<!-- Info v balicku aplikace -->
+	<property name="app.name" value="AppName"/>
+	<property name="app.vendor" value="AppVendor"/>
+
+
 	<property name="dest-c"	location="dest-client"/>
 	<property name="dest-s"	location="dest-server"/>
 	<property name="zipname" location="xvalka05.zip"/>
@@ -30,11 +55,17 @@
 	</path>
 
 
-	<target name="compile" depends="clean, main.compile.target, test.compile.target" />
+	<target name="compile" depends="clean, main.compile.target, doc, jar" />
 
 	<!-- Zkompiluje zdrojove kody -->
 	<target name="main.compile.target" >
 		<mkdir dir="${main.build.dir}"/>
+		<copy todir="${main.build.dir}/main" verbose="false">
+			<fileset dir="${main.src.dir}">
+				<include name="**/*.fxml" />
+				<include name="**/*.css" />
+			</fileset>
+		</copy>
 		<javac 
 			srcdir="${main.src.dir}" 
 			destdir="${main.build.dir}" 
@@ -56,8 +87,12 @@
 		</javac>
 	</target>
 
+	<target name="run" >
+		<java jar="${distro.dir}/${app.filename}" fork="true"/>
+	</target>
+
 	<!-- Spusti testy -->
-	<target name="run" depends="test.compile.target">
+	<target name="run-test" depends="test.compile.target">
 		<junit 
 			printsummary="on" 
 			haltonfailure="yes" 
@@ -123,6 +158,37 @@
 			<link offline="true" href="https://docs.oracle.com/javase/8/docs/api/" packagelistLoc="C:\tmp"/>
 			<link href="https://docs.oracle.com/javase/8/docs/api/"/>
 		</javadoc>
-</target>
+	</target>
+
+	<target name="jar" depends="main.compile.target">
+        <echo>Creating the main jar file</echo>  
+        <echo message="${app.filename}"/>
+        <mkdir dir="${distro.dir}" />
+        <fx:jar destfile="${distro.dir}/${app.filename}" verbose="true">
+            <fx:platform javafx="2.1+" j2se="8.0"/>
+            <!-- <fx:application mainClass="${main.class}"/> -->
+            <fx:application mainClass="${app.main.class}"/>
+
+            <!-- What to include into result jar file?
+                 Everything in the build tree-->
+            <fileset dir="${main.build.dir}"/>
+
+            <!-- Define what auxilary resources are needed
+                  These files will go into the manifest file,
+                  where the classpath is defined -->
+             <fx:resources>
+                <fx:fileset dir="${distro.dir}" includes="${app.filename}"/>
+                <fx:fileset dir="." includes="${main.lib.dir}/**" type="jar"/>
+                <fx:fileset dir="." includes="."/>
+            </fx:resources>
+
+            <!-- Make some updates to the Manifest file -->
+            <manifest>
+               <attribute name="Implementation-Vendor" value="${app.vendor}"/>
+               <attribute name="Implementation-Title" value="${app.name}"/>
+               <attribute name="Implementation-Version" value="1.0"/>
+            </manifest>
+        </fx:jar>
+    </target>
 
 </project>
