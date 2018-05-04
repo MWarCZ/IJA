@@ -12,9 +12,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.Before;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.*;
 
 public class CounterTest {
 
@@ -34,31 +32,31 @@ public class CounterTest {
     blokGetOne = new IOperation() {
       ArrayList<Integer> outPorts = new ArrayList<Integer>(Arrays.asList(1,3));
       @Override
-      public HashMap<Integer,Double> Operation(HashMap<Integer,Double> data) {
-        HashMap<Integer,Double> resut = new HashMap<Integer,Double>();
-        ArrayList<Integer> portsOut = GetPortsOut();
+      public Map<Integer,Double> Operation(Map<Integer,Double> data) {
+        Map<Integer,Double> resut = new HashMap<Integer,Double>();
+        List<Integer> portsOut = GetPortsOut();
         for(Integer portIndex: portsOut) {
           resut.put(portIndex, 1.0);
         }
         return resut;
       }
       @Override
-      public ArrayList<Integer> GetPortsIn() {
+      public List<Integer> GetPortsIn() {
         return new ArrayList<Integer>();
       }
       @Override
-      public ArrayList<Integer> GetPortsOut() {
+      public List<Integer> GetPortsOut() {
         return outPorts;
       }
     };
     blokPlus = new IOperation() {
-      ArrayList<Integer> portsIn = new ArrayList<Integer>(Arrays.asList(1, 3));
-      ArrayList<Integer> portsOut = new ArrayList<Integer>(Arrays.asList(1,2,3));
+      List<Integer> portsIn = new ArrayList<Integer>(Arrays.asList(1, 3));
+      List<Integer> portsOut = new ArrayList<Integer>(Arrays.asList(1,2,3));
 
       @Override
-      public HashMap<Integer,Double> Operation(HashMap<Integer,Double> data) {
+      public Map<Integer,Double> Operation(Map<Integer,Double> data) {
         Double sum = 0.0;
-        HashMap<Integer,Double> resut = new HashMap<Integer,Double>();
+        Map<Integer,Double> resut = new HashMap<Integer,Double>();
         for(Integer i: portsIn) {
           sum += data.get(i);
         }
@@ -69,12 +67,12 @@ public class CounterTest {
       }
 
       @Override
-      public ArrayList<Integer> GetPortsIn() {
+      public List<Integer> GetPortsIn() {
         return portsIn;
       }
 
       @Override
-      public ArrayList<Integer> GetPortsOut() {
+      public List<Integer> GetPortsOut() {
         return portsOut;
       }
     };
@@ -118,9 +116,9 @@ public class CounterTest {
 
   @Test
   public void Test_Step_one_block() throws CycleException, MissingValueException {
-    assertEquals(counter.counter, (Integer)(-1));
+    assertEquals(counter.GetCounter(), (Integer)(-1));
     counter.Step(blokGetOne, true);
-    assertEquals(counter.counter, (Integer)0);
+    assertEquals(counter.GetCounter(), (Integer)0);
     Double d;
     d = counter.GetValueOut(1);
     assertEquals((Double)1.0, d);
@@ -130,20 +128,20 @@ public class CounterTest {
 
   @Test
   public void Test_Step_counter_two_Step() throws CycleException, MissingValueException {
-    assertEquals(counter.counter, (Integer)(-1));
+    assertEquals(counter.GetCounter(), (Integer)(-1));
     counter.Step(blokGetOne, true);
-    assertEquals(counter.counter, (Integer)0);
+    assertEquals(counter.GetCounter(), (Integer)0);
     counter.Step(blokGetOne, true);
-    assertEquals(counter.counter, (Integer)1);
+    assertEquals(counter.GetCounter(), (Integer)1);
   }
 
   @Test
   public void Test_Step_two_block() throws CycleException, MissingValueException {
-    assertEquals(counter.counter, (Integer)(-1));
+    assertEquals(counter.GetCounter(), (Integer)(-1));
     counter.Step(blokGetOne, true);
-    assertEquals(counter.counter, (Integer)0);
+    assertEquals(counter.GetCounter(), (Integer)0);
     counter.Step(blokPlus, true);
-    assertEquals(counter.counter, (Integer)1);
+    assertEquals(counter.GetCounter(), (Integer)1);
     Double d;
     d = counter.GetValueOut(1);
     assertEquals((Double)2.0, d);
