@@ -2,6 +2,7 @@
 package main.ui.component;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
@@ -22,6 +23,7 @@ public class BlockControl extends GridPane {
     public Block block;
     public Line cabel;
     public Tooltip info;
+    public ArrayList<Line> lineList = new ArrayList<>();
     protected Integer rows = 1;
 
     //@FXML private TextField textField;
@@ -36,6 +38,7 @@ public class BlockControl extends GridPane {
   @FXML public MenuItem block_mul;
   @FXML public MenuItem block_div;
   @FXML public MenuItem block_switch;
+  @FXML public MenuItem remove_line;
 
     @FXML public Button centerButton;
     @FXML public Button rightButton;
@@ -154,4 +157,37 @@ public class BlockControl extends GridPane {
       return false;
     }
 
+    /**
+     * Vytvoření nového propoje do hodnoty cabel daného bloku
+     */
+    public void genNewLine(){
+        this.cabel = new Line(this.rightButton.getLayoutX(),0,this.rightButton.getLayoutX()*2-16,0);  //magical numbers B)
+        this.cabel.setTranslateX(this.rightButton.getLayoutX());    //move to center
+        this.cabel.setStrokeWidth(7);
+    }
+
+    /**
+     * Projde list spojů a najde spoj pro daný blok na daném řádku
+     * @param row
+     * @return Vrací spoj při úspěšném nalezení. V opačném případě null.
+     */
+    public Line returnLine(int row){
+        for(Line line : this.lineList){
+            if(GridPane.getRowIndex(line) == row){
+                return line;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Funkce odebere všechny propoje bloku. Vyčistí arrayList + všechny spoje v Gridpane
+     * @param gridpane
+     */
+    public void removeLine(GridPane gridpane){
+        for(Line each : this.lineList){
+            gridpane.getChildren().remove(each);
+        }
+        this.lineList.clear();
+    }
 }

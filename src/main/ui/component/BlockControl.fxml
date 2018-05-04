@@ -40,7 +40,8 @@
                   <MenuItem fx:id="block_constant" mnemonicParsing="false" text="ConstantBlock" />
                   <MenuItem fx:id="block_switch" mnemonicParsing="false" text="SwitchBlock" />
                   <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem fx:id="menu_remove" mnemonicParsing="false" text="Remove" />
+                  <MenuItem fx:id="remove_line" mnemonicParsing="false" text="Remove lines" disable="true"/>
+                  <MenuItem fx:id="menu_remove" mnemonicParsing="false" text="Remove block" />
               </items>
             </ContextMenu>
          </contextMenu></Button>

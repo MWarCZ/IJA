@@ -7,6 +7,7 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Bounds;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.Tooltip;
@@ -27,7 +28,13 @@ public class SampleController implements Initializable {
 
     @FXML private ScrollPane scrollPane;
     @FXML private GridPane gridPane;
-
+    @FXML private MenuItem createScheme;
+    @FXML private MenuItem openScheme;
+    @FXML private MenuItem saveScheme;
+    @FXML private MenuItem exitScheme;
+    @FXML private MenuItem runScheme;
+    @FXML private MenuItem resetScheme;
+    @FXML private MenuItem debugScheme;
 
     @FXML
     public void AddRow_Click(MouseEvent mouseEvent) {
@@ -93,6 +100,13 @@ public class SampleController implements Initializable {
                 GridPane.setRowIndex(cc, GridPane.getRowIndex(cc)-1);
                 cc.setPositionStart(cc.getPositionStart()-1);
                 GridPane.setRowSpan(cc,  span + 1);
+                /*adding cabel to end of list*/
+                if(cc.cabel != null){
+                    //new line on new position
+                    cc.genNewLine();
+                    parret.add(cc.cabel, colIndex, GridPane.getRowIndex(cc));
+                    cc.lineList.add(cc.cabel);
+                }
             }
         });
         cc.menu_revup.setOnAction(new EventHandler<ActionEvent>() {
@@ -103,6 +117,14 @@ public class SampleController implements Initializable {
                 GridPane.setRowIndex(cc, GridPane.getRowIndex(cc)+1);
                 cc.setPositionStart(cc.getPositionStart()+1);
                 GridPane.setRowSpan(cc,  span - 1);
+                if(cc.cabel != null){
+                    Line tmp = cc.returnLine(GridPane.getRowIndex(cc)-1);   //Null??
+                    parret.getChildren().remove(tmp);
+                    cc.lineList.remove(tmp);
+                    if(cc.lineList.isEmpty()){
+                        cc.rightButton.setVisible(true);
+                    }
+                }
             }
         });
         cc.menu_down.setOnAction(new EventHandler<ActionEvent>() {
@@ -112,6 +134,11 @@ public class SampleController implements Initializable {
                 if(span == null) span = 1;
                 GridPane.setRowSpan(cc,  span + 1);
                 cc.setPositionEnd(cc.getPositionEnd()+1);
+                if(cc.cabel !=null){
+                    cc.genNewLine();
+                    parret.add(cc.cabel, colIndex, GridPane.getRowIndex(cc)+1);
+                    cc.lineList.add(cc.cabel);
+                }
             }
         });
         cc.menu_revdown.setOnAction(new EventHandler<ActionEvent>() {
@@ -121,6 +148,14 @@ public class SampleController implements Initializable {
                 if(span == null || span < 2) span = 2;
                 GridPane.setRowSpan(cc,  span - 1);
                 cc.setPositionEnd(cc.getPositionEnd()-1);
+                if(cc.cabel != null){
+                    Line tmp = cc.returnLine(GridPane.getRowIndex(cc)+1);   //null?
+                    parret.getChildren().remove(tmp);
+                    cc.lineList.remove(tmp);
+                    if(cc.lineList.isEmpty()){
+                        cc.rightButton.setVisible(true);
+                    }
+                }
             }
         });
         cc.menu_remove.setOnAction(new EventHandler<ActionEvent>() {
@@ -130,21 +165,26 @@ public class SampleController implements Initializable {
                 parret.getChildren().remove(cc);
             }
         });
+        cc.remove_line.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                cc.removeLine(parret);
+            }
+        });
         cc.rightButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
                 if(!cc.checkNextBlock(parret, rowIndex, colIndex+1))  return;
-                cc.cabel = new Line(cc.rightButton.getLayoutX(),0,cc.rightButton.getLayoutX()*2-16,0);  //magical numbers B)
-                cc.cabel.setTranslateX(cc.rightButton.getLayoutX());    //move to center
-                cc.cabel.setStrokeWidth(7);
+                cc.remove_line.setDisable(false);
+                cc.genNewLine();
                 cc.rightButton.setVisible(false);
 
                 cc.info = new Tooltip();
                 cc.info.setText("Hello");   //vypis aktualnich hodnot
                 Tooltip.install(cc.cabel, cc.info);
 
-                parret.add(cc.cabel, colIndex, rowIndex);
-
+                parret.add(cc.cabel, GridPane.getColumnIndex(cc), GridPane.getRowIndex(cc));
+                cc.lineList.add(cc.cabel);
             }
         });
         cc.block_add.setOnAction(new EventHandler<ActionEvent>() {
