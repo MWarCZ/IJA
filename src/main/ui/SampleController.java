@@ -1,5 +1,6 @@
 package main.ui;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -7,10 +8,7 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Bounds;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextInputDialog;
-import javafx.scene.control.Tooltip;
+import javafx.scene.control.*;
 import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -232,6 +230,28 @@ public class SampleController implements Initializable {
     }
 
     //------------
+    @FXML
+    private void ExitProgram(){
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Exit");
+        alert.setHeaderText("Do you want to exit SchemeBuilder?");
+        alert.setContentText("Choose your option");
+
+        ButtonType buttonExit = new ButtonType("Exit");
+        ButtonType buttonSaveExit = new ButtonType("Save & Exit");
+        ButtonType buttonNo = new ButtonType("Nevermind");
+
+        alert.getButtonTypes().setAll(buttonExit, buttonSaveExit, buttonNo);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if(result.get() == buttonExit){
+            Platform.exit();
+        }
+        else if(result.get() == buttonSaveExit){
+            //Save scheme
+            //Platform.exit();
+        }
+    }
 
     private void AddRow(GridPane gridPane) {
         RowConstraints rc = new RowConstraints();

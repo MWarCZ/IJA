@@ -36,7 +36,7 @@
                                 <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                                 </accelerator>
                             </MenuItem>
-                            <MenuItem fx:id="exitScheme" mnemonicParsing="false" text="Exit" >
+                            <MenuItem fx:id="exitScheme" mnemonicParsing="false" onAction="#ExitProgram" text="Exit" >
                                 <accelerator>
                                     <KeyCodeCombination alt="UP" code="X" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                                 </accelerator>
