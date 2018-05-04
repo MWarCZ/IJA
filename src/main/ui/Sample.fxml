@@ -15,7 +15,7 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.input.KeyCodeCombination?>
 <AnchorPane stylesheets="@sample.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.ui.SampleController">
-    <BorderPane>
+    <BorderPane fx:id="firstBorder">
         <top>
             <MenuBar BorderPane.alignment="CENTER">
                 <menus>
@@ -45,17 +45,17 @@
                     </Menu>
                     <Menu mnemonicParsing="false" text="Tools">
                         <items>
-                            <MenuItem fx:id="runScheme" mnemonicParsing="false" text="Run" >
+                            <MenuItem fx:id="runScheme" mnemonicParsing="false" onAction="#RunScheme" text="Run" >
                                 <accelerator>
                                     <KeyCodeCombination alt="UP" code="P" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                                 </accelerator>
                             </MenuItem>
-                            <MenuItem fx:id="resetScheme" mnemonicParsing="false" text="Reset" >
+                            <MenuItem fx:id="resetScheme" mnemonicParsing="false" onAction="#ResetScheme" text="Reset" >
                                 <accelerator>
                                     <KeyCodeCombination alt="UP" code="R" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                                 </accelerator>
                             </MenuItem>
-                            <MenuItem fx:id="debugScheme" mnemonicParsing="false" text="Debug" >
+                            <MenuItem fx:id="debugScheme" mnemonicParsing="false" onAction="#DebugScheme" text="Debug" >
                                 <accelerator>
                                     <KeyCodeCombination alt="UP" code="D" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                                 </accelerator>

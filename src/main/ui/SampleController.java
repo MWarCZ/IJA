@@ -28,6 +28,7 @@ import java.util.ResourceBundle;
 public class SampleController implements Initializable {
 
     @FXML private ScrollPane scrollPane;
+    @FXML private BorderPane firstBorder;
     @FXML private GridPane gridPane;
     @FXML private MenuItem createScheme;
     @FXML private MenuItem openScheme;
@@ -291,6 +292,26 @@ public class SampleController implements Initializable {
             //Reload aplikace
         }
         //??
+    }
+
+    @FXML
+    private void RunScheme(){
+        //vykonání bloků
+        //zvýraznění bloku při jeho výpočtu cc.centerButton.setStyle("-fx-border-color: #ff0000; -fx-border-width: 3px;")
+    }
+
+    @FXML
+    private void ResetScheme(){
+        //všechny výpočty se vrátí do původního stavu, tzn. všechny bloky nastavit na původní hodnoty
+    }
+
+    @FXML
+    private void DebugScheme(){
+        //Přidání buttonu pro krokování
+        Button ccNext = new Button("Next");
+        firstBorder.setLeft(ccNext);
+        ccNext.setOnMouseClicked((event) -> System.out.println("HELO"));
+        //při kliknutí zvýraznění bloku + nad blokem dialog s hodnotamy před výpočtem a po výpočtu cc.centerButton.setStyle("-fx-border-color: #ff0000; -fx-border-width: 3px;")
     }
 
     private void AddRow(GridPane gridPane) {
