@@ -9,8 +9,8 @@ import javafx.stage.Stage;
 public class Main extends Application {
 
     @Override
-    public void start(Stage primaryStage) throws Exception{
-      System.out.println(getClass().getResource("Sample.fxml"));
+    public void start(Stage primaryStage) throws Exception {
+        System.out.println(getClass().getResource("Sample.fxml"));
         Parent root = FXMLLoader.load(getClass().getResource("Sample.fxml"));
         primaryStage.setTitle("Hello World");
         primaryStage.setScene(new Scene(root, 400, 375));
