@@ -269,6 +269,30 @@ public class SampleController implements Initializable {
         file = fileChooser.showOpenDialog((Stage) gridPane.getScene().getWindow());
     }
 
+    @FXML
+    private void Reload(){
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("New scheme");
+        alert.setHeaderText("Do you want new scheme? This one is going to be lost.");
+        alert.setContentText("Choose your option");
+
+        ButtonType buttonOk = new ButtonType("Create");
+        ButtonType buttonSave = new ButtonType("Save & Create");
+        ButtonType buttonNo = new ButtonType("Nevermind");
+
+        alert.getButtonTypes().setAll(buttonOk, buttonSave, buttonNo);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if(result.get() == buttonNo){
+            //Reload aplikace
+        }
+        else if(result.get() == buttonSave){
+            //SaveProgram();
+            //Reload aplikace
+        }
+        //??
+    }
+
     private void AddRow(GridPane gridPane) {
         RowConstraints rc = new RowConstraints();
         rc.setPrefHeight(100.0);
