@@ -178,16 +178,43 @@ public class Schema {
     this.blocks.get(columnIndex).add(block);
   }
 
+  /**
+   * Funkce odstrani blok ze schematu v danem sloupecku s danzm indexem.
+   * Pokud je index sloupce zaporny bude vyhozena vyjimka 'ArrayIndexOutOfBoundsException'.
+   * @param columnIndex Index sloupce ze ktereho bude blok odstranen.
+   * @param block Blok ktery bude odstranen ze sloupce.
+   */
+  public void RemoveBlock(int columnIndex, IOperation block) {
+    if(columnIndex < 0) {
+      throw new ArrayIndexOutOfBoundsException("Zaporny index sloupce.");
+    }
+    if(this.blocks.size() <= columnIndex) {
+      return;
+    }
+    if(this.blocks.get(columnIndex).contains(block)) {
+      this.blocks.get(columnIndex).remove(block);
+    }
+
+  }
+
   //endregion
 
   //region Functions for run simulation
 
+  /**
+   * Funkce pro restartovani simulace vypocku pro obvod zapojenych bloku.
+   */
   public void SimulationReset() {
     counter.SetOut2In();
     counter.SetOut2In();
     counter.counter = -1;
   }
 
+  /**
+   * Funkce pro vykonani jednoho kroku simulace vypoctu obvodu.
+   * @throws CycleException Doslo ke kolizi bloku ve schematu - necekana smycka na portech.
+   * @throws MissingValueException Na vstupnim portu nektereho z bloku chybi vstupni hodnota.
+   */
   public void SimulationStep() throws CycleException, MissingValueException {
     ArrayList<IOperation> list = GetBlocksColumn(counter.counter+1);
     if(list != null) {
@@ -196,6 +223,11 @@ public class Schema {
     }
   }
 
+  /**
+   * Funkce pro vykonani vsech kroku simulace vypoctu obvodu.
+   * @throws CycleException Doslo ke kolizi bloku ve schematu - necekana smycka na portech.
+   * @throws MissingValueException Na vstupnim portu nektereho z bloku chybi vstupni hodnota.
+   */
   public void SimulationRun() throws CycleException, MissingValueException {
     ArrayList<IOperation> list = GetBlocksColumn(0);
     while(list != null) {
