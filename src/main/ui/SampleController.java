@@ -37,6 +37,7 @@ public class SampleController implements Initializable {
     @FXML private MenuItem runScheme;
     @FXML private MenuItem resetScheme;
     @FXML private MenuItem debugScheme;
+    @FXML private MenuItem stopDebug;
     private File file;
 
     @FXML
@@ -310,8 +311,14 @@ public class SampleController implements Initializable {
         //Přidání buttonu pro krokování
         Button ccNext = new Button("Next");
         firstBorder.setLeft(ccNext);
-        ccNext.setOnMouseClicked((event) -> System.out.println("HELO"));
+        //ccNext.setOnMouseClicked((event) -> System.out.println("HELO"));
         //při kliknutí zvýraznění bloku + nad blokem dialog s hodnotamy před výpočtem a po výpočtu cc.centerButton.setStyle("-fx-border-color: #ff0000; -fx-border-width: 3px;")
+    }
+
+    @FXML
+    private void StopDebug(){
+        if(firstBorder.getLeft() == null)   return;
+        firstBorder.setLeft(null);
     }
 
     private void AddRow(GridPane gridPane) {
