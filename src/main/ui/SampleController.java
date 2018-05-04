@@ -15,9 +15,12 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.*;
 import javafx.scene.shape.Line;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import main.blocks.Block;
 import main.ui.component.BlockControl;
 
+import java.io.File;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -33,6 +36,7 @@ public class SampleController implements Initializable {
     @FXML private MenuItem runScheme;
     @FXML private MenuItem resetScheme;
     @FXML private MenuItem debugScheme;
+    private File file;
 
     @FXML
     public void AddRow_Click(MouseEvent mouseEvent) {
@@ -248,9 +252,21 @@ public class SampleController implements Initializable {
             Platform.exit();
         }
         else if(result.get() == buttonSaveExit){
-            //Save scheme
+            //SaveProgram();
             //Platform.exit();
         }
+    }
+
+    @FXML
+    private void SaveProgram(){
+        //Ulozeni programu!!
+    }
+
+    @FXML
+    private void LoadFile(){
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open XML file");
+        file = fileChooser.showOpenDialog((Stage) gridPane.getScene().getWindow());
     }
 
     private void AddRow(GridPane gridPane) {
