@@ -10,7 +10,57 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import main.ui.component.BlockControl?>
 
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.input.KeyCodeCombination?>
 <AnchorPane stylesheets="@sample.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.ui.SampleController">
+    <BorderPane>
+        <top>
+            <MenuBar BorderPane.alignment="CENTER">
+                <menus>
+                    <Menu mnemonicParsing="false" text="File">
+                        <items>
+                            <MenuItem mnemonicParsing="false" text="Open" >
+                                <accelerator>
+                                    <KeyCodeCombination alt="UP" code="O" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                                </accelerator>
+                            </MenuItem>
+                            <MenuItem mnemonicParsing="false" text="Save" >
+                                <accelerator>
+                                <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                                </accelerator>
+                            </MenuItem>
+                            <MenuItem mnemonicParsing="false" text="Exit" >
+                                <accelerator>
+                                    <KeyCodeCombination alt="UP" code="X" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                                </accelerator>
+                            </MenuItem>
+                        </items>
+                    </Menu>
+                    <Menu mnemonicParsing="false" text="Tools">
+                        <items>
+                            <MenuItem mnemonicParsing="false" text="Run" >
+                                <accelerator>
+                                    <KeyCodeCombination alt="UP" code="P" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                                </accelerator>
+                            </MenuItem>
+                            <MenuItem mnemonicParsing="false" text="Reset" >
+                                <accelerator>
+                                    <KeyCodeCombination alt="UP" code="R" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                                </accelerator>
+                            </MenuItem>
+                            <MenuItem mnemonicParsing="false" text="Debug" >
+                                <accelerator>
+                                    <KeyCodeCombination alt="UP" code="D" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                                </accelerator>
+                            </MenuItem>
+                        </items>
+                    </Menu>
+                </menus>
+            </MenuBar>
+        </top>
+        <center>
     <ScrollPane fx:id="scrollPane" hbarPolicy="ALWAYS" pannable="true" vbarPolicy="ALWAYS" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
       <content>
          <BorderPane>
@@ -30,4 +80,6 @@
          </BorderPane>
       </content>
     </ScrollPane>
+        </center>
+    </BorderPane>
 </AnchorPane>
