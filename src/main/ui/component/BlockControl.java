@@ -20,17 +20,17 @@ import main.blocks.Block;
  * Sample custom control hosting a text field and a button.
  */
 public class BlockControl extends GridPane {
-    public Block block;
-    protected Integer rows = 1;
+  public Block block;
+  protected Integer rows = 1;
 
-    //@FXML private TextField textField;
-    @FXML public MenuItem menu_up;
-    @FXML public MenuItem menu_down;
-    @FXML public MenuItem menu_revup;
-    @FXML public MenuItem menu_revdown;
-    @FXML public MenuItem menu_remove;
+  //@FXML private TextField textField;
+  @FXML public MenuItem menu_up;
+  @FXML public MenuItem menu_down;
+  @FXML public MenuItem menu_revup;
+  @FXML public MenuItem menu_revdown;
+  @FXML public MenuItem menu_remove;
 
-    @FXML private Button centerButton;
+  @FXML private Button centerButton;
 
 
   public BlockControl() {
