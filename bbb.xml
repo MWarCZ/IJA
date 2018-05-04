@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<schema name="Schema 01">
+<step order="0">
+<block class="main.blocks.Block">
+<position end="10" start="0"/>
+<in group="0">0</in>
+<in group="1">2</in>
+<in group="1">1</in>
+<out group="0">1</out>
+<out group="0">2</out>
+</block>
+</step>
+<step order="1">
+<block class="main.blocks.Block">
+<position end="10" start="0"/>
+<in group="0">1</in>
+<in group="0">2</in>
+<out group="0">1</out>
+<out group="0">2</out>
+</block>
+<block class="main.blocks.Block">
+<position end="10" start="0"/>
+<out group="0">4</out>
+</block>
+</step>
+</schema>

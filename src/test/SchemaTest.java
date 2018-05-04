@@ -10,9 +10,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.Before;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.*;
 
 public class SchemaTest {
 
@@ -32,20 +30,20 @@ public class SchemaTest {
       ArrayList<Integer> outPorts = new ArrayList<Integer>(Arrays.asList(1,3));
       ArrayList<Integer> inPorts = new ArrayList<>();
       @Override
-      public HashMap<Integer,Double> Operation(HashMap<Integer,Double> data) {
-        HashMap<Integer,Double> resut = new HashMap<Integer,Double>();
-        ArrayList<Integer> portsOut = GetPortsOut();
+      public Map<Integer,Double> Operation(Map<Integer,Double> data) {
+        Map<Integer,Double> resut = new HashMap<Integer,Double>();
+        List<Integer> portsOut = GetPortsOut();
         for(Integer portIndex: portsOut) {
           resut.put(portIndex, 1.0);
         }
         return resut;
       }
       @Override
-      public ArrayList<Integer> GetPortsIn() {
+      public List<Integer> GetPortsIn() {
         return inPorts;
       }
       @Override
-      public ArrayList<Integer> GetPortsOut() {
+      public List<Integer> GetPortsOut() {
         return outPorts;
       }
     };
@@ -148,13 +146,13 @@ public class SchemaTest {
     assertEquals((Integer)0, schema.GetCountBlocksColumns());
 
     schema.AddEmptyColumnOfBlocks(0);
-    ArrayList<IOperation> list0 = schema.GetBlocksColumn(0);
+    List<IOperation> list0 = schema.GetBlocksColumn(0);
     assertNotNull(list0);
     assertEquals(0, list0.size());
     assertEquals((Integer)1, schema.GetCountBlocksColumns());
 
     schema.AddEmptyColumnOfBlocks(1);
-    ArrayList<IOperation> list1 = schema.GetBlocksColumn(1);
+    List<IOperation> list1 = schema.GetBlocksColumn(1);
     assertNotNull(list1);
     assertEquals(0, list1.size());
     assertEquals((Integer)2, schema.GetCountBlocksColumns());
@@ -163,7 +161,7 @@ public class SchemaTest {
     assertSame(list1, schema.GetBlocksColumn(1));
 
     schema.AddEmptyColumnOfBlocks(1);
-    ArrayList<IOperation> list2 = schema.GetBlocksColumn(1);
+    List<IOperation> list2 = schema.GetBlocksColumn(1);
     assertNotNull(list2);
     assertEquals(0, list2.size());
     assertEquals((Integer)3, schema.GetCountBlocksColumns());
@@ -173,7 +171,7 @@ public class SchemaTest {
     assertSame(list1, schema.GetBlocksColumn(2));
 
     schema.AddEmptyColumnOfBlocks(5);
-    ArrayList<IOperation> list3 = schema.GetBlocksColumn(5);
+    List<IOperation> list3 = schema.GetBlocksColumn(5);
     assertNotNull(list3);
     assertEquals(0, list3.size());
     assertEquals((Integer)6, schema.GetCountBlocksColumns());
@@ -201,7 +199,7 @@ public class SchemaTest {
     schema.AddBlock(1,blokGetOne);
     assertEquals((Integer)2, schema.GetCountBlocksColumns());
 
-    ArrayList<IOperation> blocks;
+    List<IOperation> blocks;
     blocks = schema.GetBlocksColumn(1);
     assertEquals(1, blocks.size());
     assertSame(blokGetOne, blocks.get(0) );

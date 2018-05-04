@@ -13,6 +13,7 @@ import org.junit.Test;
 import org.junit.Before;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class BlockTest {
 
@@ -127,7 +128,7 @@ public class BlockTest {
     for(int i = 0; i<10; i++) {
       block.AddPortIn(i, 0);
     }
-    ArrayList<Integer> tmp = block.GetPortsIn();
+    List<Integer> tmp = block.GetPortsIn();
     assertEquals(10, tmp.size() );
 
     Integer check = 0;
@@ -156,7 +157,7 @@ public class BlockTest {
     for(int i = 0; i<10; i+=2) {
       block.RemovePortIn(i);
     }
-    ArrayList<Integer> tmp = block.GetPortsIn();
+    List<Integer> tmp = block.GetPortsIn();
     assertEquals(5, tmp.size() );
 
     Integer check = 1;
@@ -230,7 +231,7 @@ public class BlockTest {
     for(int i = 0; i<10; i++) {
       block.AddPortOut(i, 0);
     }
-    ArrayList<Integer> tmp = block.GetPortsOut();
+    List<Integer> tmp = block.GetPortsOut();
     assertEquals(10, tmp.size() );
 
     Integer check = 0;
@@ -259,7 +260,7 @@ public class BlockTest {
     for(int i = 0; i<10; i+=2) {
       block.RemovePortOut(i);
     }
-    ArrayList<Integer> tmp = block.GetPortsOut();
+    List<Integer> tmp = block.GetPortsOut();
     assertEquals(5, tmp.size() );
 
     Integer check = 1;

@@ -15,6 +15,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.Before;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -67,7 +68,7 @@ public class AdvanceTest {
 
   }
   @Test
-  public void Test_Schema_SimulationStep() throws PortException, MissingValueException, CycleException {
+  public void Test_Schema_SimulationStep() throws PortException, MissingValueException, CycleException, IOException {
     Block block;
 
     block = new BlockConstant();
@@ -121,7 +122,8 @@ public class AdvanceTest {
     schema.SimulationStep();
     schema.SimulationStep();
 
-    Integer c1 = schema.counter.counter;
+    //Integer c1 = schema.counter.counter;
+    Integer c1 = schema.counter.GetCounter();
 
     saveloader.WriteXML3("bbb.xija", schema);
 
@@ -130,7 +132,7 @@ public class AdvanceTest {
     schema2.SimulationReset();
     schema2.SimulationRun();
 
-    Integer c2 = schema.counter.counter;
+    Integer c2 = schema.counter.GetCounter();
 
   }
 
