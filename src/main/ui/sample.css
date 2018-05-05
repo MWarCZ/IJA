@@ -1,3 +1,4 @@
+
 .scroll-pane {
     -fx-background-color: black;
 }
@@ -26,4 +27,9 @@
 
 .scroll-pane > .corner {
     -fx-background-color: black;
+}
+
+.schema_column {
+  -fx-background-color: #00b8ff;
+  -fx-opacity: 0.5;
 }

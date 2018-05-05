@@ -15,6 +15,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
@@ -173,8 +174,34 @@ public class BlockControl extends GridPane {
                 }
             });
 
+
+            // Vytvareni kotextoveho menu pro smazani portu
+            ContextMenu menuPortIn = new ContextMenu();
+            // Munu obsahuje rozne varianty, ktere bloky pridat do schematu
+            MenuItem itemPortInRemove = new MenuItem();
+            itemPortInRemove.setText("Remove Port");
+            menuPortIn.getItems().add(itemPortInRemove);
+
+            itemPortInRemove.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent event) {
+                    block.RemovePortIn(portInPosition);
+                    portInButton.getStyleClass().remove("port");
+                    portInButton.getStyleClass().add("addport");
+                    portInButton.setText("<");
+                }
+            });
+            portInButton.setOnContextMenuRequested(new EventHandler<ContextMenuEvent>() {
+                @Override
+                public void handle(ContextMenuEvent event) {
+                    menuPortIn.show(portInButton, event.getScreenX(), event.getScreenY());
+                }
+            });
+
             this.portsInButtons.add(portInButton);
             this.add(portInButton, 0, i*3+1);
+
+            //-------------
 
             Button portOutButton = new Button( ">");
             portOutButton.setFocusTraversable(false);
@@ -232,6 +259,30 @@ public class BlockControl extends GridPane {
                         }
                     }
                     System.out.println("Button portOut onAction");
+                }
+            });
+
+
+            // Vytvareni kotextoveho menu pro smazani portu
+            ContextMenu menuPortOut = new ContextMenu();
+            // Munu obsahuje rozne varianty, ktere bloky pridat do schematu
+            MenuItem itemPortOutRemove = new MenuItem();
+            itemPortOutRemove.setText("Remove Port");
+            menuPortOut.getItems().add(itemPortOutRemove);
+
+            itemPortOutRemove.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent event) {
+                    block.RemovePortOut(portOutPosition);
+                    portOutButton.getStyleClass().remove("port");
+                    portOutButton.getStyleClass().add("addport");
+                    portOutButton.setText(">");
+                }
+            });
+            portOutButton.setOnContextMenuRequested(new EventHandler<ContextMenuEvent>() {
+                @Override
+                public void handle(ContextMenuEvent event) {
+                    menuPortOut.show(portOutButton, event.getScreenX(), event.getScreenY());
                 }
             });
 

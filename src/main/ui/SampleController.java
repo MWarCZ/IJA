@@ -24,9 +24,12 @@ import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import javafx.util.converter.NumberStringConverter;
 import main.blocks.*;
+import main.manipulator.CycleException;
 import main.manipulator.IOperation;
+import main.manipulator.MissingValueException;
 import main.project.SaveLoader;
 import main.project.Schema;
+import main.project.SimulationEndException;
 import main.ui.component.BlockControl;
 
 import java.io.File;
@@ -373,24 +376,65 @@ public class SampleController implements Initializable {
         //??
     }
 
+    private void ChangeColumnStyle(GridPane gridPane, Integer column, String style) {
+        for( Node child : gridPane.getChildren()) {
+            if(child instanceof Pane && GridPane.getColumnIndex(child) == column) {
+                child.setStyle(style);
+            }
+        }
+    }
+
     @FXML
     private void RunScheme() {
         //vykonání bloků
         //zvýraznění bloku při jeho výpočtu cc.centerButton.setStyle("-fx-border-color: #ff0000; -fx-border-width: 3px;")
+        ResetScheme();
+        try {
+            schema.SimulationRun();
+        } catch (CycleException e) {
+            e.printStackTrace();
+            System.out.println("Cycle - double port on one wire.");
+        } catch (MissingValueException e) {
+            e.printStackTrace();
+            System.out.println("Missing value on port.");
+        } catch (SimulationEndException e) {
+            System.out.println("Simulace skoncila.");
+        }
     }
 
     @FXML
     private void ResetScheme() {
         //všechny výpočty se vrátí do původního stavu, tzn. všechny bloky nastavit na původní hodnoty
+
+        ChangeColumnStyle(gridPane,schema.counter.GetCounter()
+            ,"");
+        schema.SimulationReset();
     }
 
     @FXML
     private void DebugScheme() {
         //Přidání buttonu pro krokování
-        Button ccNext = new Button("Next");
-        firstBorder.setLeft(ccNext);
+        //Button ccNext = new Button("Next");
+        //firstBorder.setLeft(ccNext);
         //ccNext.setOnMouseClicked((event) -> System.out.println("HELO"));
         //při kliknutí zvýraznění bloku + nad blokem dialog s hodnotamy před výpočtem a po výpočtu cc.centerButton.setStyle("-fx-border-color: #ff0000; -fx-border-width: 3px;")
+
+        ChangeColumnStyle(gridPane,schema.counter.GetCounter()
+            ,"");
+        try {
+            schema.SimulationStep();
+        } catch (CycleException e) {
+            System.out.println("Cycle - double port on one wire.");
+        } catch (MissingValueException e) {
+            System.out.println("Missing value on port.");
+        } catch (SimulationEndException e) {
+            System.out.println("Simulace skoncila.");
+            return;
+        }
+        ChangeColumnStyle(gridPane,schema.counter.GetCounter()
+            ,"-fx-background-color: red;");
+
+
     }
 
     @FXML
@@ -442,7 +486,8 @@ public class SampleController implements Initializable {
         pane.toBack();
         node.toBack();
 
-        pane.setStyle("-fx-background-color: #00b8ff; -fx-opacity: 0.5;");
+        //pane.setStyle("-fx-background-color: #00b8ff; -fx-opacity: 0.5;");
+        pane.getStyleClass().add("schema_column");
 
         // Vytvareni kotextoveho menu daneho panelu
         ContextMenu menu = new ContextMenu();

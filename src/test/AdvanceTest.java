@@ -11,6 +11,7 @@ import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 
 import main.project.Schema;
+import main.project.SimulationEndException;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.Before;
@@ -68,7 +69,7 @@ public class AdvanceTest {
 
   }
   @Test
-  public void Test_Schema_SimulationStep() throws PortException, MissingValueException, CycleException, IOException {
+  public void Test_Schema_SimulationStep() throws PortException, MissingValueException, CycleException, IOException, SimulationEndException {
     Block block;
 
     block = new BlockConstant();

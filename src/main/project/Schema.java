@@ -242,11 +242,14 @@ public class Schema {
      * @throws CycleException        Doslo ke kolizi bloku ve schematu - necekana smycka na portech.
      * @throws MissingValueException Na vstupnim portu nektereho z bloku chybi vstupni hodnota.
      */
-    public void SimulationStep() throws CycleException, MissingValueException {
+    public void SimulationStep() throws CycleException, MissingValueException, SimulationEndException {
         List<IOperation> list = GetBlocksColumn(counter.GetCounter() + 1);
         if (list != null) {
             counter.SetOut2In();
             counter.Step(list, false);
+        }
+        else {
+            throw new SimulationEndException("Simulace jiz skoncila.");
         }
     }
 
@@ -256,7 +259,7 @@ public class Schema {
      * @throws CycleException        Doslo ke kolizi bloku ve schematu - necekana smycka na portech.
      * @throws MissingValueException Na vstupnim portu nektereho z bloku chybi vstupni hodnota.
      */
-    public void SimulationRun() throws CycleException, MissingValueException {
+    public void SimulationRun() throws CycleException, MissingValueException, SimulationEndException {
         List<IOperation> list = GetBlocksColumn(0);
         while (list != null) {
             counter.SetOut2In();
