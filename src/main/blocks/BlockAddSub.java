@@ -1,6 +1,9 @@
 package main.blocks;
 
+import javafx.collections.FXCollections;
+
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Blok pro scitani a odecitani.
@@ -11,40 +14,42 @@ import java.util.HashMap;
  */
 public class BlockAddSub extends Block {
 
-  public BlockAddSub(Integer positionStart, Integer positionEnd) {
-    super(positionStart, positionEnd);
-  }
-  public BlockAddSub() {
-    super();
-  }
-
-  @Override
-  public boolean IsPossibleGroupIn(Integer group) {
-    return ( group >= 0 && group <=1 );
-  }
-  @Override
-  public boolean IsPossibleGroupOut(Integer group) {
-    return group == 0;
-  }
-
-  @Override
-  public HashMap<Integer, Double> Operation(HashMap<Integer, Double> data) {
-    Double sum = 0.0;
-
-    for(Integer i=0; i<portsIn.size(); i++) {
-      if(groupIn.get(i).equals(0)) {
-        sum += data.get(portsIn.get(i));
-      }
-      else {
-        sum -= data.get(portsIn.get(i));
-      }
+    public BlockAddSub(Integer positionStart, Integer positionEnd) {
+        super(positionStart, positionEnd);
     }
 
-    HashMap<Integer, Double> results = new HashMap<>();
-    for(Integer port : portsOut) {
-      results.put(port, sum);
+    public BlockAddSub() {
+        super();
     }
-    return results;
-  }
+
+    @Override
+    public boolean IsPossibleGroupIn(Integer group) {
+        return (group >= 0 && group <= 1);
+    }
+
+    @Override
+    public boolean IsPossibleGroupOut(Integer group) {
+        return group == 0;
+    }
+
+    @Override
+    public Map<Integer, Double> Operation(Map<Integer, Double> data) {
+        Double sum = 0.0;
+
+        for (Integer i = 0; i < portsIn.size(); i++) {
+            if (groupIn.get(i).equals(0)) {
+                sum += data.get(portsIn.get(i));
+            } else {
+                sum -= data.get(portsIn.get(i));
+            }
+        }
+
+//        Map<Integer, Double> results = new HashMap<>();
+        Map<Integer, Double> results = FXCollections.observableHashMap();
+        for (Integer port : portsOut) {
+            results.put(port, sum);
+        }
+        return results;
+    }
 }
 

@@ -2,19 +2,19 @@
 <schema name="Pokus X">
 <step order="0">
 <block class="main.blocks.BlockMulDiv">
+<position end="0" start="0"/>
 <in group="0">2</in>
 <in group="1">5</in>
 <in group="0">1</in>
 <out group="0">1</out>
 <out group="0">0</out>
-<position start="0" end="10"/>
 </block>
 <block class="main.blocks.BlockMulDiv">
+<position end="0" start="0"/>
 <in group="0">3</in>
 <in group="1">4</in>
 <out group="0">2</out>
 <out group="0">3</out>
-<position start="0" end="10"/>
 </block>
 </step>
 </schema>

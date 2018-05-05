@@ -11,6 +11,8 @@ import java.util.ArrayList;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.List;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.Document;
 import javax.xml.parsers.DocumentBuilder;
@@ -63,7 +65,7 @@ public class SaveLoader {
           stepElement.setAttribute("order", i.toString() );
 
           // Prochazeni bloku ve sloupecku - v jednom kroku.
-          ArrayList<IOperation> blocks = schema.blocks.get(i);
+          List<IOperation> blocks = schema.blocks.get(i);
           for(Integer j=0; j<blocks.size(); j++) {
             IOperation block = blocks.get(j);
             IDomSaveLoad saveBlock = (IDomSaveLoad)block;
@@ -111,7 +113,7 @@ public class SaveLoader {
     public Schema ReadXML3(String filename) throws IOException {
       // Vytvareni noveho schematu.
       Schema schema = new Schema("tmp");
-      ArrayList<ArrayList<IOperation>> blocks = schema.blocks;
+      List<List<IOperation>> blocks = schema.blocks;
       schema.SetPath(filename);
 
       Document dom;
