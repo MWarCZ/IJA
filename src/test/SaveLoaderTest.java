@@ -14,9 +14,11 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.Before;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 
 public class SaveLoaderTest {
 
@@ -40,19 +42,19 @@ public class SaveLoaderTest {
     System.out.println(s);
   }
   @Test
-  public void TestRead() {
+  public void TestRead() throws IOException {
     String s = "xxx.xml";
-    saveloader.ReadXML3(s);
+    //saveloader.ReadXML3(s);
     System.out.println(s);
   }
   @Test
-  public void TestRead2() {
+  public void TestRead2() throws IOException {
     Schema schema = null;
     String s = "aaa.xml";
     schema = saveloader.ReadXML3(s);
   }
   @Test
-  public void TestReadWrite() {
+  public void TestReadWrite() throws IOException {
     Schema schema = null;
     String s = "aaa.xml";
     schema = saveloader.ReadXML3(s);
@@ -61,10 +63,10 @@ public class SaveLoaderTest {
     System.out.println("-------");
   }
   @Test
-  public void Test_Read_BlockMulDiv() {
+  public void Test_Read_BlockMulDiv() throws IOException {
     Schema schema = saveloader.ReadXML3("bbb.xml");
-    HashMap<Integer,Double> out;
-    HashMap<Integer,Double> data = new HashMap<>();
+    Map<Integer,Double> out;
+    Map<Integer,Double> data = new HashMap<>();
     data.put(0,12.0);
     data.put(1,2.0);
     data.put(2,3.0);
@@ -72,7 +74,7 @@ public class SaveLoaderTest {
     System.out.println(out.toString());
   }
   @Test
-  public void Test_Write_BlockMulDiv() throws PortException {
+  public void Test_Write_BlockMulDiv() throws PortException, IOException {
     Schema schema = new Schema("Pokus X");
 
     Block block = new BlockMulDiv();
