@@ -33,12 +33,12 @@
                   <MenuItem fx:id="menu_revdown" mnemonicParsing="false" text="ReduceUP | MoveUp" />
                   <MenuItem fx:id="menu_down" mnemonicParsing="false" text="ExtendDown" />
                   <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem fx:id="block_add" mnemonicParsing="false" text="AddBlock" />
-                  <MenuItem fx:id="block_sub" mnemonicParsing="false" text="SubBlock" />
-                  <MenuItem fx:id="block_mul" mnemonicParsing="false" text="MulBlock" />
-                  <MenuItem fx:id="block_div" mnemonicParsing="false" text="DivBlock" />
-                  <MenuItem fx:id="block_constant" mnemonicParsing="false" text="ConstantBlock" />
-                  <MenuItem fx:id="block_switch" mnemonicParsing="false" text="SwitchBlock" />
+                  <!--<MenuItem fx:id="block_add" mnemonicParsing="false" text="AddBlock" />-->
+                  <!--<MenuItem fx:id="block_sub" mnemonicParsing="false" text="SubBlock" />-->
+                  <!--<MenuItem fx:id="block_mul" mnemonicParsing="false" text="MulBlock" />-->
+                  <!--<MenuItem fx:id="block_div" mnemonicParsing="false" text="DivBlock" />-->
+                  <!--<MenuItem fx:id="block_constant" mnemonicParsing="false" text="ConstantBlock" />-->
+                  <!--<MenuItem fx:id="block_switch" mnemonicParsing="false" text="SwitchBlock" />-->
                   <SeparatorMenuItem mnemonicParsing="false" />
                   <MenuItem fx:id="remove_line" mnemonicParsing="false" text="Remove lines" disable="true"/>
                   <MenuItem fx:id="menu_remove" mnemonicParsing="false" text="Remove block" />
