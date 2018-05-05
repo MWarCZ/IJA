@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
@@ -20,6 +21,7 @@ import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Line;
 import main.blocks.Block;
+import main.blocks.PortException;
 
 /**
  * Sample custom control hosting a text field and a button.
@@ -116,13 +118,58 @@ public class BlockControl extends GridPane {
             portInButton.setFocusTraversable(false);
             portInButton.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
             portInButton.setMinSize(0.0,0.0);
-            portInButton.getStyleClass().add("addport");
 
+            // pozice kde se port nachazi ve schematu.
+            Integer portInPosition = block.GetPositionStart()+i;
+            if(block.GetPortsIn().contains(portInPosition)) {
+                portInButton.getStyleClass().add("port");
+                try {
+                    portInButton.setText(
+                        block.GetGroupIn(portInPosition).toString() );
+                } catch (PortException e) {
+                    //e.printStackTrace();
+                    System.out.println("Chyba pri bindovani portu. ");
+                }
+            }
+            else {
+                portInButton.getStyleClass().add("addport");
+            }
             portInButton.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent event) {
-                    portInButton.getStyleClass().remove("addport");
-                    portInButton.getStyleClass().add("port");
+                    Boolean ExistPort = portInButton.getStyleClass().contains("port");
+                    if(! ExistPort) {
+                        try {
+                            Integer group = block.GetNextGroupIn(-1);
+                            block.AddPortIn(portInPosition, group);
+                            portInButton.getStyleClass().remove("addport");
+                            portInButton.getStyleClass().add("port");
+                            try {
+                                portInButton.setText(
+                                    block.GetGroupIn(portInPosition).toString() );
+                            } catch (PortException e) {
+                                //e.printStackTrace();
+                                System.out.println("Chyba pri bindovani portu. ");
+                            }
+                        } catch (PortException e) {
+                            //e.printStackTrace();
+                            System.out.println("Chyba pri vytvareni portu.");
+                        }
+                    }
+                    else {
+                        try {
+                            Integer groupNow = block.GetGroupIn(portInPosition);
+                            Integer group = block.GetNextGroupIn(groupNow);
+                            block.ChangeGroupIn(portInPosition, group);
+
+                            portInButton.setText(
+                                block.GetGroupIn(portInPosition).toString() );
+                        } catch (PortException e) {
+                            //e.printStackTrace();
+                            System.out.println("Chyba pri zmene skupiny portu.");
+                        }
+                    }
+                    System.out.println("Button portOut onAction");
                 }
             });
 
@@ -133,14 +180,58 @@ public class BlockControl extends GridPane {
             portOutButton.setFocusTraversable(false);
             portOutButton.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
             portOutButton.setMinSize(0.0,0.0);
-            portOutButton.getStyleClass().add("addport");
 
+            // pozice kde se port nachazi ve schematu.
+            Integer portOutPosition = block.GetPositionStart()+i;
+            if(block.GetPortsOut().contains(portOutPosition)) {
+                portOutButton.getStyleClass().add("port");
+                try {
+                    portOutButton.setText(
+                        block.GetGroupOut(portOutPosition).toString() );
+                } catch (PortException e) {
+                    //e.printStackTrace();
+                    System.out.println("Chyba pri bindovani portu.");
+                }
+            }
+            else {
+                portOutButton.getStyleClass().add("addport");
+            }
             portOutButton.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent event) {
-                    portOutButton.getStyleClass().remove("addport");
-                    portOutButton.getStyleClass().add("port");
-                    System.out.println("Button port onAction");
+                    Boolean ExistPort = portOutButton.getStyleClass().contains("port");
+                    if(! ExistPort) {
+                        try {
+                            Integer group = block.GetNextGroupOut(-1);
+                            block.AddPortOut(portOutPosition, group);
+                            portOutButton.getStyleClass().remove("addport");
+                            portOutButton.getStyleClass().add("port");
+                            try {
+                                portOutButton.setText(
+                                    block.GetGroupOut(portOutPosition).toString() );
+                            } catch (PortException e) {
+                                //e.printStackTrace();
+                                System.out.println("Chyba pri bindovani portu.");
+                            }
+                        } catch (PortException e) {
+                            //e.printStackTrace();
+                            System.out.println("Chyba pri vytvareni portu.");
+                        }
+                    }
+                    else {
+                        try {
+                            Integer groupNow = block.GetGroupOut(portOutPosition);
+                            Integer group = block.GetNextGroupOut(groupNow);
+                            block.ChangeGroupOut(portOutPosition, group);
+
+                            portOutButton.setText(
+                                block.GetGroupOut(portOutPosition).toString() );
+                        } catch (PortException e) {
+                            //e.printStackTrace();
+                            System.out.println("Chyba pri zmene skupiny portu.");
+                        }
+                    }
+                    System.out.println("Button portOut onAction");
                 }
             });
 
