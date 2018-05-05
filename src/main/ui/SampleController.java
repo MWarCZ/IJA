@@ -24,6 +24,7 @@ import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import javafx.util.converter.NumberStringConverter;
 import main.blocks.*;
+import main.manipulator.IOperation;
 import main.project.SaveLoader;
 import main.project.Schema;
 import main.ui.component.BlockControl;
@@ -31,6 +32,7 @@ import main.ui.component.BlockControl;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.Predicate;
@@ -113,7 +115,7 @@ public class SampleController implements Initializable {
         BlockControl cc = new BlockControl();
         cc.setBlock(block);
 
-        gridPane.add(cc, colIndex, rowIndex);
+        gridPane.add(cc, colIndex, rowIndex, 1, block.GetSize());
 
         cc.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
@@ -282,7 +284,7 @@ public class SampleController implements Initializable {
     private void LoadFile() {
         fileChooser.setTitle("Open XML file");
         file = fileChooser.showOpenDialog((Stage) gridPane.getScene().getWindow());
-        ReDrawSchema();
+
         if(file != null) {
             try {
                 System.out.println(String.format("Start loading file '%s'", file.getPath()));
@@ -290,8 +292,7 @@ public class SampleController implements Initializable {
                 schema = saveloader.ReadXML3(file.getPath());
                 System.out.println(String.format("File '%s' is loaded.", file.getPath()));
 
-                // \todo Pretvoreni formu na zaklade nacteneho schematu.
-                // ReDrawSchema();
+                ReDrawSchema();
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -302,20 +303,45 @@ public class SampleController implements Initializable {
     }
 
     private void ReDrawSchema(){
-//        gridPane.getChildren().removeIf(new Predicate<Node>() {
-//            @Override
-//            public boolean test(Node node) {
-//                return (GridPane.getRowIndex(node) == null || GridPane.getRowIndex(node) == 0);
-//            }
-//        });
-// /todo Vsechno :D
-        //gridPane.getRowConstraints().clear();
-        //gridPane.getColumnConstraints().clear();
+        // Vycisteni formu - gridu
+        Node settingNode = gridPane.getChildren().get(0);
+        gridPane.getChildren().clear();
+        gridPane.getRowConstraints().clear();
+        gridPane.getColumnConstraints().clear();
+        gridPane.getChildren().add(settingNode);
 
-        for (Integer i = 0; i < 2; i++) {
+        // Znovunaplneni formu (gridu) ze schematu
+        Integer maxRowIndex = 0;
+        for(Integer i=0; i<schema.GetCountBlocksColumns(); i++) {
             AddCol(gridPane);
+            for(IOperation operation :schema.GetBlocksColumn(i)) {
+                // Zjistovani poctu radku
+                if(operation instanceof Block) {
+                    Integer tmpIndex = ((Block)operation).GetPositionEnd();
+                    if(tmpIndex > maxRowIndex) maxRowIndex = tmpIndex;
+                }
+                // Pridani bloku do formu
+                if(operation instanceof BlockConstant) {
+                    BlockConstant block = (BlockConstant)operation;
+                    AddBlockConstant(i, block.GetPositionStart(), block );
+                }
+                else if(operation instanceof BlockAddSub) {
+                    BlockAddSub block = (BlockAddSub)operation;
+                    AddBlockAddSub(i, block.GetPositionStart(), block );
+                }
+                else if(operation instanceof BlockMulDiv) {
+                    BlockMulDiv block = (BlockMulDiv)operation;
+                    AddBlockMulDiv(i, block.GetPositionStart(), block );
+                }
+                else if(operation instanceof BlockSwitch) {
+                    BlockSwitch block = (BlockSwitch)operation;
+                    AddBlockSwitch(i, block.GetPositionStart(), block );
+                }
+                // \todo else ...
+            }
         }
-        for (Integer i = 0; i < 2; i++) {
+        // Doplneni radku
+        for (Integer i = 0; i <= maxRowIndex; i++) {
             AddRow(gridPane);
         }
     }
@@ -368,6 +394,8 @@ public class SampleController implements Initializable {
         if (firstBorder.getLeft() == null) return;
         firstBorder.setLeft(null);
     }
+
+    //----------------------------
 
     private void AddRow(GridPane gridPane) {
         RowConstraints rc = new RowConstraints();
@@ -440,22 +468,11 @@ public class SampleController implements Initializable {
                 PositionCell_Click(event);
             }
         });
-//        pane.setOnContextMenuRequested(new EventHandler<ContextMenuEvent>() {
-//            @Override
-//            public void handle(ContextMenuEvent event) {
-//                Node source = (Node)event.getSource() ;
-//                Integer colIndex = GridPane.getColumnIndex(source);
-//                Integer rowIndex = GridPane.getRowIndex(source);
-//                AddCustomControl(gridPane, colIndex, rowIndex, new Block() );
-//            }
-//        });
 
         // Pridavani bloku do schema a do formu
         itemBlockConstant.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                BlockConstant block = new BlockConstant();
-                block.SetConstValue(10.0);
 
                 //region Dialog ktery prijma hodnoty typu Double
                 TextInputDialog tid = new TextInputDialog("1.0");
@@ -500,23 +517,15 @@ public class SampleController implements Initializable {
                 if (result.isPresent()) {
                     // ok
                     Double value = Double.parseDouble(tid.getEditor().getText());
-                    block.SetConstValue(value);
 
                     Integer colIndex = GridPane.getColumnIndex(pane);
                     Integer rowIndex = GridPane.getRowIndex(pane);
 
-                    block.SetPosition(rowIndex, rowIndex);
-                    schema.AddBlock(colIndex, block);
+                    AddNewBlockConstant(colIndex, rowIndex, value);
 
-                    BlockControl cc = AddCustomControl(gridPane, colIndex, rowIndex, block);
-
-                    Bindings.bindBidirectional(cc.textProperty,
-                        block.constValueProperty, new NumberStringConverter());
-
-                    System.out.println("Create new BlockConstant.");
                 } else {
                     // cancel
-                    System.out.println("Canceled new BlockConstant.");
+                    System.out.println("Canceled BlockConstant.");
                 }
 
                 System.out.println(String.format("Cell: [%d, %d]", colIndex, rowIndex));
@@ -526,19 +535,10 @@ public class SampleController implements Initializable {
         itemBlockAddSub.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                BlockAddSub block = new BlockAddSub();
                 Integer colIndex = GridPane.getColumnIndex(pane);
                 Integer rowIndex = GridPane.getRowIndex(pane);
 
-                block.SetPosition(rowIndex, rowIndex);
-                schema.AddBlock(colIndex, block);
-
-                BlockControl cc = AddCustomControl(gridPane, colIndex, rowIndex, block);
-
-                //cc.textProperty.setValue("0[+-]X");
-                cc.textProperty.setValue("+-");
-
-                System.out.println("Create new BlockAddSub.");
+                AddNewBlockAddSub(colIndex, rowIndex);
 
                 System.out.println(String.format("Cell: [%d, %d]", colIndex, rowIndex));
             }
@@ -547,19 +547,10 @@ public class SampleController implements Initializable {
         itemBlockMulDiv.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                BlockMulDiv block = new BlockMulDiv();
                 Integer colIndex = GridPane.getColumnIndex(pane);
                 Integer rowIndex = GridPane.getRowIndex(pane);
 
-                block.SetPosition(rowIndex, rowIndex);
-                schema.AddBlock(colIndex, block);
-
-                BlockControl cc = AddCustomControl(gridPane, colIndex, rowIndex, block);
-
-                //cc.textProperty.setValue("1[*/]X");
-                cc.textProperty.setValue("*/");
-
-                System.out.println("Create new BlockMulDiv.");
+                AddNewBlockMulDiv(colIndex, rowIndex);
 
                 System.out.println(String.format("Cell: [%d, %d]", colIndex, rowIndex));
             }
@@ -568,23 +559,83 @@ public class SampleController implements Initializable {
         itemBlockSwitch.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                BlockSwitch block = new BlockSwitch();
                 Integer colIndex = GridPane.getColumnIndex(pane);
                 Integer rowIndex = GridPane.getRowIndex(pane);
 
-                block.SetPosition(rowIndex, rowIndex);
-                schema.AddBlock(colIndex, block);
-
-                BlockControl cc = AddCustomControl(gridPane, colIndex, rowIndex, block);
-
-                cc.textProperty.setValue("Switch");
-
-                System.out.println("Create new BlockSwitch.");
+                AddNewBlockSwitch(colIndex, rowIndex);
 
                 System.out.println(String.format("Cell: [%d, %d]", colIndex, rowIndex));
             }
         });
     }
+
+
+    // Prida blok do formu
+    private void AddBlockConstant(Integer colIndex, Integer rowIndex, BlockConstant block) {
+        BlockControl cc = AddCustomControl(gridPane, colIndex, rowIndex, block);
+        Bindings.bindBidirectional(cc.textProperty,
+            block.constValueProperty, new NumberStringConverter());
+
+        System.out.println("Create new BlockConstant.");
+    }
+    // Vytvori blok a prida do formu
+    private void AddNewBlockConstant(Integer colIndex, Integer rowIndex, Double value) {
+        BlockConstant block = new BlockConstant();
+        block.SetPosition(rowIndex, rowIndex);
+        block.SetConstValue(value);
+        schema.AddBlock(colIndex, block);
+
+        this.AddBlockConstant(colIndex, rowIndex, block);
+    }
+
+    // Prida blok do formu
+    private void AddBlockAddSub(Integer colIndex, Integer rowIndex, BlockAddSub block) {
+        BlockControl cc = AddCustomControl(gridPane, colIndex, rowIndex, block);
+        //cc.textProperty.setValue("0[+-]X");
+        cc.textProperty.setValue("+-");
+        System.out.println("Create new BlockAddSub.");
+    }
+    // Vytvori blok a prida do formu
+    private void AddNewBlockAddSub(Integer colIndex, Integer rowIndex) {
+        BlockAddSub block = new BlockAddSub();
+        block.SetPosition(rowIndex, rowIndex);
+        schema.AddBlock(colIndex, block);
+
+        this.AddBlockAddSub(colIndex, rowIndex, block);
+    }
+
+    // Prida blok do formu
+    private void AddBlockMulDiv(Integer colIndex, Integer rowIndex, BlockMulDiv block) {
+        BlockControl cc = AddCustomControl(gridPane, colIndex, rowIndex, block);
+        //cc.textProperty.setValue("0[*/]X");
+        cc.textProperty.setValue("*/");
+        System.out.println("Create new BlockMulDiv.");
+    }
+    // Vytvori blok a prida do formu
+    private void AddNewBlockMulDiv(Integer colIndex, Integer rowIndex) {
+        BlockMulDiv block = new BlockMulDiv();
+        block.SetPosition(rowIndex, rowIndex);
+        schema.AddBlock(colIndex, block);
+
+        this.AddBlockMulDiv(colIndex, rowIndex, block);
+    }
+
+    // Prida blok do formu
+    private void AddBlockSwitch(Integer colIndex, Integer rowIndex, BlockSwitch block) {
+        BlockControl cc = AddCustomControl(gridPane, colIndex, rowIndex, block);
+        cc.textProperty.setValue("Switch");
+        System.out.println("Create new BlockSwitch.");
+    }
+    // Vytvori blok a prida do formu
+    private void AddNewBlockSwitch(Integer colIndex, Integer rowIndex) {
+        BlockSwitch block = new BlockSwitch();
+        block.SetPosition(rowIndex, rowIndex);
+        schema.AddBlock(colIndex, block);
+
+        this.AddBlockSwitch(colIndex, rowIndex, block);
+    }
+
+    //----------------------------
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {

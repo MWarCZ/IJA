@@ -31,7 +31,7 @@ public class Block implements IOperation, IDomSaveLoad {
 
     public IntegerProperty positionStartProperty = new SimpleIntegerProperty(0);
     public IntegerProperty positionEndProperty = new SimpleIntegerProperty(0);
-
+    public IntegerProperty sizeProperty = new SimpleIntegerProperty(1);
 
     /**
      * Constructor
@@ -63,13 +63,27 @@ public class Block implements IOperation, IDomSaveLoad {
         this.SetPosition(0, 0);
     }
 
+    protected void SetSize(Integer value) {
+        if(value>0){
+            this.sizeProperty.setValue(value);
+        }
+        else {
+            this.sizeProperty.setValue(1);
+        }
+    }
+    public Integer GetSize() {
+        return this.sizeProperty.getValue();
+    }
+
     public void SetPosition(Integer value1, Integer value2) {
         if (value1 < value2) {
             positionStartProperty.setValue(value1);
             positionEndProperty.setValue(value2);
+            this.SetSize(value2-value1+1);
         } else {
             positionStartProperty.setValue(value2);
             positionEndProperty.setValue(value1);
+            this.SetSize(value1-value2+1);
         }
     }
 //    public void SetPosition(Integer value1, Integer value2) {
