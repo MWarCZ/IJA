@@ -3,9 +3,13 @@ package main.ui.component;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -27,6 +31,9 @@ public class BlockControl extends GridPane {
     public ArrayList<Line> lineList = new ArrayList<>();
     protected Integer rows = 1;
 
+    public List<Button> portsInButtons;
+    public List<Button> portsOutButtons;
+
     //@FXML private TextField textField;
     @FXML
     public MenuItem menu_up;
@@ -38,18 +45,6 @@ public class BlockControl extends GridPane {
     public MenuItem menu_revdown;
     @FXML
     public MenuItem menu_remove;
-//    @FXML
-//    public MenuItem block_add;   //Block types list
-//    @FXML
-//    public MenuItem block_sub;
-//    @FXML
-//    public MenuItem block_constant;
-//    @FXML
-//    public MenuItem block_mul;
-//    @FXML
-//    public MenuItem block_div;
-//    @FXML
-//    public MenuItem block_switch;
     @FXML
     public MenuItem remove_line;
 
@@ -62,6 +57,9 @@ public class BlockControl extends GridPane {
     @FXML public StringProperty textProperty = new SimpleStringProperty("?");
 
     public BlockControl() {
+        this.portsInButtons = FXCollections.observableArrayList();
+        this.portsOutButtons = FXCollections.observableArrayList();
+
         FXMLLoader fxmlLoader = new FXMLLoader(
             getClass().getResource(
                 //"custom_control.fxml"
@@ -79,8 +77,79 @@ public class BlockControl extends GridPane {
 
         centerButton.textProperty().bind(textProperty);
     }
-
+    // Zmeni velikost bloku - o kolikatiradkovy blok se bude jednat
+    //protected void ReSizeByBlock() {
     protected void ChangeRows(Integer start, Integer end) {
+        rows = block.GetSize();
+        if (rows <= 0) rows = 1;
+        Button centerButton = this.centerButton;
+
+        this.getChildren().clear();
+        this.getRowConstraints().clear();
+
+
+        for (int i = 0; i < rows * 3; i += 3) {
+            //<RowConstraints minHeight="0.0" percentHeight="25.0" vgrow="SOMETIMES" />
+            RowConstraints rc = new RowConstraints();
+            rc.setMinHeight(0.0);
+            rc.setPercentHeight(25.0);
+            this.getRowConstraints().add(rc);
+
+            rc = new RowConstraints();
+            rc.setMinHeight(0.0);
+            rc.setPercentHeight(50.0);
+            this.getRowConstraints().add(rc);
+
+            rc = new RowConstraints();
+            rc.setMinHeight(0.0);
+            rc.setPercentHeight(25.0);
+            this.getRowConstraints().add(rc);
+        }
+
+        //GridPane.setRowSpan(centerButton, rows * 3);
+        this.add(centerButton, 1, 0, 1, rows*3 );
+
+        this.portsInButtons.clear();
+        this.portsOutButtons.clear();
+        for(Integer i = 0; i<rows; i++) {
+            Button portInButton = new Button("<");
+            portInButton.setFocusTraversable(false);
+            portInButton.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+            portInButton.setMinSize(0.0,0.0);
+            portInButton.getStyleClass().add("addport");
+
+            portInButton.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent event) {
+                    portInButton.getStyleClass().remove("addport");
+                    portInButton.getStyleClass().add("port");
+                }
+            });
+
+            this.portsInButtons.add(portInButton);
+            this.add(portInButton, 0, i*3+1);
+
+            Button portOutButton = new Button( ">");
+            portOutButton.setFocusTraversable(false);
+            portOutButton.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+            portOutButton.setMinSize(0.0,0.0);
+            portOutButton.getStyleClass().add("addport");
+
+            portOutButton.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent event) {
+                    portOutButton.getStyleClass().remove("addport");
+                    portOutButton.getStyleClass().add("port");
+                    System.out.println("Button port onAction");
+                }
+            });
+
+            this.portsOutButtons.add(portOutButton);
+            this.add(portOutButton, 2, i*3+1);
+        }
+    }
+    // Zmeni velikost bloku - o kolikatiradkovy blok se bude jednat
+    protected void ChangeRows1(Integer start, Integer end) {
         rows = end - start + 1;
         if (rows <= 0) rows = 1;
         Integer nowRows = this.getRowConstraints().size();
@@ -95,10 +164,12 @@ public class BlockControl extends GridPane {
             rc.setMinHeight(0.0);
             rc.setPercentHeight(25.0);
             this.getRowConstraints().add(rc);
+
             rc = new RowConstraints();
             rc.setMinHeight(0.0);
             rc.setPercentHeight(50.0);
             this.getRowConstraints().add(rc);
+
             rc = new RowConstraints();
             rc.setMinHeight(0.0);
             rc.setPercentHeight(25.0);
@@ -107,6 +178,10 @@ public class BlockControl extends GridPane {
         GridPane.setRowSpan(centerButton, rows * 3);
     }
 
+// <Button focusTraversable="false"
+// maxHeight="1.7976931348623157E308"
+// maxWidth="1.7976931348623157E308"
+// GridPane.columnIndex="2" GridPane.rowIndex="1" />
     public Block getBlock() {
         return this.block;
     }

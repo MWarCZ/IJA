@@ -116,6 +116,7 @@ public class SampleController implements Initializable {
         cc.setBlock(block);
 
         gridPane.add(cc, colIndex, rowIndex, 1, block.GetSize());
+        cc.toFront();
 
         cc.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
@@ -292,7 +293,7 @@ public class SampleController implements Initializable {
                 schema = saveloader.ReadXML3(file.getPath());
                 System.out.println(String.format("File '%s' is loaded.", file.getPath()));
 
-                ReDrawSchema();
+                ReDrawSchema(gridPane, schema);
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -302,7 +303,8 @@ public class SampleController implements Initializable {
 
     }
 
-    private void ReDrawSchema(){
+    // Znovuvytvori form ze schematu
+    private void ReDrawSchema(GridPane gridPane, Schema schema){
         // Vycisteni formu - gridu
         Node settingNode = gridPane.getChildren().get(0);
         gridPane.getChildren().clear();
@@ -312,6 +314,7 @@ public class SampleController implements Initializable {
 
         // Znovunaplneni formu (gridu) ze schematu
         Integer maxRowIndex = 0;
+        Integer rowIndexNow = 0;
         for(Integer i=0; i<schema.GetCountBlocksColumns(); i++) {
             AddCol(gridPane);
             for(IOperation operation :schema.GetBlocksColumn(i)) {
@@ -319,6 +322,7 @@ public class SampleController implements Initializable {
                 if(operation instanceof Block) {
                     Integer tmpIndex = ((Block)operation).GetPositionEnd();
                     if(tmpIndex > maxRowIndex) maxRowIndex = tmpIndex;
+
                 }
                 // Pridani bloku do formu
                 if(operation instanceof BlockConstant) {
@@ -434,6 +438,11 @@ public class SampleController implements Initializable {
         // Vytvoreni prvniho panelu v bunce.
         Pane pane = new Pane();
         gridPane.add(pane, colIndex, rowIndex);
+        Node node = gridPane.getChildren().get(0);
+        pane.toBack();
+        node.toBack();
+
+        pane.setStyle("-fx-background-color: #00b8ff; -fx-opacity: 0.5;");
 
         // Vytvareni kotextoveho menu daneho panelu
         ContextMenu menu = new ContextMenu();
