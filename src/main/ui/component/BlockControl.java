@@ -329,8 +329,7 @@ public class BlockControl extends GridPane {
                 @Override
                 public void handle(MouseEvent event) {
                     if(showabilityProperty.getValue()) {
-                        Double value = portOutValues.get(portOutPosition);
-                        System.out.println(String.format("Enter: %d : %s",portOutPosition, value.toString()));
+                        Double value = getPortOutValues().get(portOutPosition);
                         setTextValue( (value==null)?"Null":value.toString()  );
 
                         Bounds boundsInScreen = portOutButton.localToScreen(portOutButton.getBoundsInLocal());

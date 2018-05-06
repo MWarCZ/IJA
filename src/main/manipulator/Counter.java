@@ -97,16 +97,19 @@ public class Counter {
      *               (tj. pokud v out je null tak se tam nahraje hodnota z in)
      */
     public void SetOut2In(boolean memory) {
-        Map<Integer, Double> tmp = this.valueIn;
+//        Map<Integer, Double> tmp = this.valueIn;
         if (!memory) {
-            this.valueIn = this.valueOut;
-            this.valueOut = tmp;
+            this.valueIn.clear();
+            this.valueIn.putAll(this.valueOut);
+            this.valueOut.clear();
+//            this.valueIn = this.valueOut;
+//            this.valueOut = tmp;
         } else {
             for (Map.Entry<Integer, Double> pair : this.valueIn.entrySet()) {
                 //if()
             }
         }
-        this.valueOut.clear();
+//        this.valueOut.clear();
         this.SetCounter(GetCounter() + 1);
         //this.counter++;
     }

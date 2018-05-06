@@ -495,6 +495,7 @@ public class SampleController implements Initializable {
             System.out.println("Simulace skoncila.");
             ShowResultDialog(schema);
             ResetScheme();
+            ChangeColumnStyle(gridPane, -1, "");
             return;
         } catch (CycleException e) {
 //            e.printStackTrace();
@@ -519,6 +520,7 @@ public class SampleController implements Initializable {
         ChangeColumnStyle(gridPane,schema.counter.GetCounter()
             ,"-fx-background-color: #eaff00;");
         schema.SimulationReset();
+        ChangeColumnStyle(gridPane, -1, "");
     }
 
     @FXML
@@ -562,12 +564,14 @@ public class SampleController implements Initializable {
             System.out.println("Simulace skoncila.");
             ShowResultDialog(schema);
             ResetScheme();
+            ChangeColumnStyle(gridPane, -1, "");
             return;
         }
 
         ChangeColumnStyle(gridPane,schema.counter.GetCounter()
             ,"-fx-background-color: #eaff00;");
         schema.SimulationReset();
+        ChangeColumnStyle(gridPane, -1, "");
 
     }
 
