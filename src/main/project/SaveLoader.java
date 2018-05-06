@@ -1,4 +1,10 @@
-
+/**
+ * Obsahuje trydu SaveLoader.
+ * Trida obstarava ulkadani a nacitani Schematu do/ze souboru.
+ *
+ * @author Miroslav Válka (xvalka05)
+ * @author Jan Trněný (xtrnen03)
+ */
 package main.project;
 
 import main.manipulator.IOperation;
@@ -6,8 +12,6 @@ import main.project.IDomSaveLoad;
 import main.project.Schema;
 
 import java.lang.String;
-import java.util.ArrayList;
-
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -32,9 +36,14 @@ import javax.xml.transform.stream.*;
 import org.xml.sax.*;
 import org.w3c.dom.*;
 
-
+/**
+ * Trida nacita ci ulkada schema do/z xml souboru.
+ */
 public class SaveLoader {
 
+    /**
+     * Konstruktor pro vytvoreni instance.
+     */
     public SaveLoader() { }
 
   /**

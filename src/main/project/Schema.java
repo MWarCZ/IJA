@@ -1,7 +1,11 @@
-
+/**
+ * Obsahuje trydu Schema.
+ * Trida predstavuje schema s bloky a operace nad schematem.
+ *
+ * @author Miroslav Válka (xvalka05)
+ * @author Jan Trněný (xtrnen03)
+ */
 package main.project;
-
-//import main.blocks.Block;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -13,29 +17,29 @@ import main.manipulator.IOperation;
 import main.manipulator.MissingValueException;
 
 import java.lang.String;
-import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Trida predstavuje schema obsahujici bloky a majici nejake jmeno a cestu, kde je ulozeno.
+ *
+ */
 public class Schema {
 
     //region Variables / Property
+    /**
+     * Vlastnost nazev schematu.
+     */
     public StringProperty nameProperty = new SimpleStringProperty("schema");
+    /**
+     * Vlastnost cesta k souboru, kde je chema ulozene/kam se ma ulozit.
+     */
     public StringProperty pahtProperty = new SimpleStringProperty("");
 
+    /**
+     * Bloky ulozene ve schematu. (Sloupecekt paraleni zpracovani/radek seriove.)
+     */
     public List<List<IOperation>> blocks;
 
-    /**
-     * Nazev schematu.
-     */
-    //private String name;
-    /**
-     * Cesta, kde je schema ulozeno / kam se bude ukladat.
-     */
-    //private String path;
-    /**
-     * Seznam obsahujici sloupce s jednotlivymi bloky.
-     */
-    //public ArrayList<ArrayList<IOperation>> blocks;
     /**
      * Citac daneho schematu pro zpracovavani a simulaci vypoctu bloku.
      */
@@ -62,7 +66,7 @@ public class Schema {
     }
 
     /**
-     * Konstruktor
+     * Konstruktor inicializuje vychozi hodnoty.
      *
      * @param name Nazev schematu.
      * @param path Cesta, kde je schema ulozeno. Na tuto hodnotu se hledi pri ukladani a nacitani schematu.
@@ -72,7 +76,7 @@ public class Schema {
     }
 
     /**
-     * Konstruktor
+     * Konstruktor inicializuje vychozi hodnoty.
      *
      * @param name Nazev schematu.
      */
@@ -129,7 +133,10 @@ public class Schema {
         return this.blocks.size();
     }
 
-
+    /**
+     * Funkce zjisti na kterem nejposlednejsim radku se bloky ve schematu nachazi.
+     * @return Pocet radku ve schematu.
+     */
     public Integer GetCountRows() {
         Integer nowMaxRowIndex = -1;
         for(Integer i=0; i< GetCountBlocksColumns(); i++) {
@@ -254,6 +261,7 @@ public class Schema {
      *
      * @throws CycleException        Doslo ke kolizi bloku ve schematu - necekana smycka na portech.
      * @throws MissingValueException Na vstupnim portu nektereho z bloku chybi vstupni hodnota.
+     * @throws SimulationEndException Simulace jiz skoncila a neni mozne dale pokracovat.
      */
     public void SimulationStep() throws CycleException, MissingValueException, SimulationEndException {
         List<IOperation> list = GetBlocksColumn(counter.GetCounter() + 1);
@@ -271,6 +279,7 @@ public class Schema {
      *
      * @throws CycleException        Doslo ke kolizi bloku ve schematu - necekana smycka na portech.
      * @throws MissingValueException Na vstupnim portu nektereho z bloku chybi vstupni hodnota.
+     * @throws SimulationEndException Simulace jiz skoncila a neni mozne dale pokracovat.
      */
     public void SimulationRun() throws CycleException, MissingValueException, SimulationEndException {
         List<IOperation> list = GetBlocksColumn(0);

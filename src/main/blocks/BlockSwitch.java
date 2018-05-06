@@ -1,8 +1,13 @@
+/**
+ * Obsahuje tridu BlockSwitch, ktera predstavuje prok pro prepinani hodnot mezi radky.
+ *
+ * @author Miroslav Válka (xvalka05)
+ * @author Jan Trněný (xtrnen03)
+ */
+
 package main.blocks;
 
 import javafx.collections.FXCollections;
-
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -12,10 +17,19 @@ import java.util.Map;
  */
 public class BlockSwitch extends Block {
 
+    /**
+     * Konstruktor inicializuje vychozi hodnoty.
+     *
+     * @param positionStart Vychozi hodnota pocatecni pozice umisteni bloku.
+     * @param positionEnd   Vychozi hodnota konce pozice umisteni bloku.
+     */
     public BlockSwitch(Integer positionStart, Integer positionEnd) {
         super(positionStart, positionEnd);
     }
 
+    /**
+     * Konstruktor inicializuje vychozi hodnoty.
+     */
     public BlockSwitch() {
         super();
     }
@@ -41,7 +55,7 @@ public class BlockSwitch extends Block {
     }
 
     @Override
-    public Integer GetNextGroupOut(Integer group) throws PortException {
+    public Integer GetNextGroupOut(Integer group) throws PortGroupException {
         Integer indexGroup = groupIn.indexOf(group);
         indexGroup = indexGroup + 1;
         if (indexGroup < groupIn.size()) {

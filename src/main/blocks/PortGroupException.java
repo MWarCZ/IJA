@@ -1,3 +1,11 @@
+/**
+ * Obsahuje tridu PortGroupException.
+ * Jedna se o vyjimku, ktera muze byt vyvolana bloky pri praci se skupinami porty.
+ *
+ * @author Miroslav Válka (xvalka05)
+ * @author Jan Trněný (xtrnen03)
+ */
+
 package main.blocks;
 
 import main.blocks.PortException;

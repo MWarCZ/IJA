@@ -1,14 +1,18 @@
+/**
+ * Obsahuje trydu Block, jedna se o zakladni trydu ze ktere vychazi ostatni bloky.
+ *
+ * @author Miroslav Válka (xvalka05)
+ * @author Jan Trněný (xtrnen03)
+ */
 package main.blocks;
+
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+//import javafx.collections.ObservableList;
 import main.manipulator.IOperation;
 import main.project.IDomSaveLoad;
-
-//import main.blocks.PortException;
-//import main.blocks.PortGroupException;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -16,25 +20,52 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+//import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Zakladni implementace bloku.
+ */
 public class Block implements IOperation, IDomSaveLoad {
+    /**
+     * Seznam Indexu propoju na ktery jsou napojeny vstupni porty.
+     */
     protected List<Integer> portsIn;
+    /**
+     * Seznam indexu propoju na ktery jsou napojeny vystupni porty.
+     */
     protected List<Integer> portsOut;
+    /**
+     * Seznam skupin pridelenych vstupnim portum.
+     */
     protected List<Integer> groupIn;
+    /**
+     * Seznam skupin pridelenych vystupnim portum.
+     */
     protected List<Integer> groupOut;
 
 //    protected Integer positionStart;
 //    protected Integer positionEnd;
 
+    /**
+     * Vlastnost urcujici pocatecni pozice bloku.
+     */
     public IntegerProperty positionStartProperty = new SimpleIntegerProperty(0);
+    /**
+     * Vlastnost urcujici konec pozice bloku.
+     */
     public IntegerProperty positionEndProperty = new SimpleIntegerProperty(0);
+    /**
+     * Vlastnost uchovavajici velikost bloku.
+     */
     public IntegerProperty sizeProperty = new SimpleIntegerProperty(1);
 
     /**
-     * Constructor
+     * Konstruktor inicializuje vychozi hodnoty.
+     *
+     * @param positionStart Vychozi hodnota pocatecni pozice umisteni bloku.
+     * @param positionEnd   Vychozi hodnota konce pozice umisteni bloku.
      */
     public Block(Integer positionStart, Integer positionEnd) {
 //        portsIn = new ArrayList<Integer>();
@@ -50,6 +81,9 @@ public class Block implements IOperation, IDomSaveLoad {
         this.SetPosition(positionStart, positionEnd);
     }
 
+    /**
+     * Konstruktor inicializuje vychozi hodnoty.
+     */
     public Block() {
 //        portsIn = new ArrayList<Integer>();
 //        portsOut = new ArrayList<Integer>();
@@ -63,51 +97,83 @@ public class Block implements IOperation, IDomSaveLoad {
         this.SetPosition(0, 0);
     }
 
+    /**
+     * Setter pro nastaveni hodnoty velikosti. Hodnota se ulozi do sizeProperty.
+     *
+     * @param value Hodnota velikosti.
+     */
     protected void SetSize(Integer value) {
-        if(value>0){
+        if (value > 0) {
             this.sizeProperty.setValue(value);
-        }
-        else {
+        } else {
             this.sizeProperty.setValue(1);
         }
     }
+
+    /**
+     * Getter pro vraceni hodnoty velikosti bloku.
+     *
+     * @return Vraci velikost bloku.
+     */
     public Integer GetSize() {
         return this.sizeProperty.getValue();
     }
 
+    /**
+     * Setter pro nastaveni zacatku a konce bloku.
+     * Hodnoty jsou automaticky ulozeny tak,
+     * aby nejmensi hodnota byla positionStart a nejvedsi byla positionEnd.
+     * Dojde take k prepocitani velikosti bloku.
+     *
+     * @param value1 Hodnota umisteni bloku od.
+     * @param value2 Hodnota umisteni bloku do.
+     */
     public void SetPosition(Integer value1, Integer value2) {
         if (value1 < value2) {
             positionStartProperty.setValue(value1);
             positionEndProperty.setValue(value2);
-            this.SetSize(value2-value1+1);
+            this.SetSize(value2 - value1 + 1);
         } else {
             positionStartProperty.setValue(value2);
             positionEndProperty.setValue(value1);
-            this.SetSize(value1-value2+1);
+            this.SetSize(value1 - value2 + 1);
         }
     }
-//    public void SetPosition(Integer value1, Integer value2) {
-//        if (value1 < value2) {
-//            this.positionStart = value1;
-//            this.positionEnd = value2;
-//        } else {
-//            this.positionStart = value2;
-//            this.positionEnd = value1;
-//        }
-//    }
 
+    /**
+     * Getter pro ziskani hodnoty pocatecni pozice bloku.
+     *
+     * @return Hodnota pocatecni pozice bloku.
+     */
     public Integer GetPositionStart() {
         return positionStartProperty.getValue();
     }
 
+    /**
+     * Setter pro nastaveni pocatecni pozice bloku.
+     * Pokud je pocatecni pozice vedsi nez koncova pozice, tak dojde k prohozeni techto hodnot.
+     *
+     * @param value Nova hodnota umisteni.
+     */
     public void SetPositionStart(Integer value) {
         this.SetPosition(value, this.GetPositionEnd());
     }
 
+    /**
+     * Getter pro ziskani hodnoty koncove pozice bloku.
+     *
+     * @return Hodnota koncove pozice bloku.
+     */
     public Integer GetPositionEnd() {
         return positionEndProperty.getValue();
     }
 
+    /**
+     * Setter pro nastaveni koncove pozice bloku.
+     * Pokud je koncova pozice mensi nez pocatecni pozice, tak dojde k prohozeni techto hodnot.
+     *
+     * @param value Nova hodnota umisteni.
+     */
     public void SetPositionEnd(Integer value) {
         this.SetPosition(this.GetPositionStart(), value);
     }
@@ -171,6 +237,13 @@ public class Block implements IOperation, IDomSaveLoad {
         }
     }
 
+    /**
+     * Funkce pro ziskani do ktere skupiny vstupnich portu patri dany port.
+     *
+     * @param port Port pro ktery se zjistuje jeho skupina.
+     * @return Vraci se skupina portu do ktere port patri.
+     * @throws PortException Pokud dany port v bloku neexituje dojde k vyjimce.
+     */
     public Integer GetGroupIn(Integer port) throws PortException {
         Integer index = this.portsIn.indexOf(port);
         if (index < 0) {
@@ -207,8 +280,14 @@ public class Block implements IOperation, IDomSaveLoad {
         this.groupIn.set(index, group);
     }
 
-
-    public Integer GetNextGroupIn(Integer group) throws PortException {
+    /**
+     * Funkce vrati cislo skupiny, ktera je jako dalsi v poradi za zadanou skupinou.
+     *
+     * @param group Aktualni skupina portu.
+     * @return Vraci cislo skupiny portu, ktera nasleduje za zadanou skupinou.
+     * @throws PortGroupException Pokud dode k chybe pri praci se skupinami portu.
+     */
+    public Integer GetNextGroupIn(Integer group) throws PortGroupException {
         // maximalni hodnota vstupni skupiny
         Integer maxGroup = 0;
         for (Integer g : groupIn) {
@@ -302,6 +381,13 @@ public class Block implements IOperation, IDomSaveLoad {
         }
     }
 
+    /**
+     * Funkce pro ziskani do ktere skupiny vystupnich portu patri dany port.
+     *
+     * @param port Port pro ktery se zjistuje jeho skupina.
+     * @return Vraci se skupina portu do ktere port patri.
+     * @throws PortException Pokud dany port v bloku neexituje dojde k vyjimce.
+     */
     public Integer GetGroupOut(Integer port) throws PortException {
         Integer index = this.portsOut.indexOf(port);
         if (index < 0) {
@@ -339,7 +425,14 @@ public class Block implements IOperation, IDomSaveLoad {
     }
 
 
-    public Integer GetNextGroupOut(Integer group) throws PortException {
+    /**
+     * Funkce vrati cislo skupiny, ktera je jako dalsi v poradi za zadanou skupinou.
+     *
+     * @param group Aktualni skupina portu.
+     * @return Vraci cislo skupiny portu, ktera nasleduje za zadanou skupinou.
+     * @throws PortGroupException Pokud dode k chybe pri praci se skupinami portu.
+     */
+    public Integer GetNextGroupOut(Integer group) throws PortGroupException {
         // maximalni hodnota vstupni skupiny
         Integer maxGroup = 0;
         for (Integer g : groupOut) {
