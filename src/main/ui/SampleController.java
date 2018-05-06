@@ -49,6 +49,8 @@ public class SampleController implements Initializable {
     @FXML
     public AnchorPane AnchorWrapper;
     @FXML
+    public MenuItem renameScheme;
+    @FXML
     private ScrollPane scrollPane;
     @FXML
     private BorderPane firstBorder;
@@ -124,7 +126,7 @@ public class SampleController implements Initializable {
 
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Result info");
-        alert.setHeaderText("Results");
+        alert.setHeaderText(String.format("'%s' results", schema.GetName() ));
         alert.getDialogPane().getStyleClass().add("result_dialog");
         alert.getDialogPane().getStylesheets().add(
             getClass().getResource("sample.css").toExternalForm());
@@ -147,7 +149,7 @@ public class SampleController implements Initializable {
 //            node -> node instanceof Label).forEach(
 //                node -> ((Label)node).setMinHeight(Region.USE_PREF_SIZE));
 
-        List<Node> node =alert.getDialogPane().getChildren();
+//        List<Node> node =alert.getDialogPane().getChildren();
 //        Pane pane = new Pane();
 //        ScrollPane spane = new ScrollPane(pane);
 //        Node temp = alert.getDialogPane().getChildren().get(1);
@@ -444,6 +446,24 @@ public class SampleController implements Initializable {
         }
     }
 
+    private void CreateNewSchema() {
+        TextInputDialog tid = new TextInputDialog(schema.GetName());
+        tid.setTitle("Create new schema");
+        tid.setHeaderText("Name");
+        Optional<String> result = tid.showAndWait();
+        if (result.isPresent()) {
+            // ok
+            schema = new Schema(tid.getEditor().getText());
+            ReDrawSchema(gridPane, schema);
+        }
+        for (Integer i = 0; i < 3; i++) {
+            AddCol(gridPane);
+        }
+        for (Integer i = 0; i < 3; i++) {
+            AddRow(gridPane);
+        }
+    }
+
     @FXML
     private void Reload() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -458,12 +478,13 @@ public class SampleController implements Initializable {
         alert.getButtonTypes().setAll(buttonOk, buttonSave, buttonNo);
 
         Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == buttonNo) {
+        if (result.get() == buttonOk) {
             //Reload aplikace
+            CreateNewSchema();
         } else if (result.get() == buttonSave) {
-            //SaveProgram();
+            SaveProgram();
+            CreateNewSchema();
             //Reload aplikace
-
         }
         //??
     }
@@ -530,6 +551,7 @@ public class SampleController implements Initializable {
         ChangeColumnStyle(gridPane,schema.counter.GetCounter()
             ,"");
         schema.SimulationReset();
+        ChangeColumnStyle(gridPane, -1, "");
     }
 
     @FXML
@@ -577,8 +599,21 @@ public class SampleController implements Initializable {
 
     @FXML
     private void StopDebug() {
-        if (firstBorder.getLeft() == null) return;
-        firstBorder.setLeft(null);
+        //if (firstBorder.getLeft() == null) return;
+        //firstBorder.setLeft(null);
+        ResetScheme();
+    }
+
+    @FXML
+    public void RenameSchema(ActionEvent actionEvent) {
+        TextInputDialog tid = new TextInputDialog(schema.GetName());
+        tid.setTitle("Rename schema");
+        tid.setHeaderText("New name");
+        Optional<String> result = tid.showAndWait();
+        if (result.isPresent()) {
+            // ok
+            schema.SetName(tid.getEditor().getText());
+        }
     }
 
     //----------------------------
@@ -669,7 +704,7 @@ public class SampleController implements Initializable {
                 //region Dialog ktery prijma hodnoty typu Double
                 TextInputDialog tid = new TextInputDialog("1.0");
                 tid.setTitle("Double");
-                tid.setHeaderText("Zadejte hodnotu bloku:");
+                tid.setHeaderText("Enter value:");
 
                 Pattern validEditingState = Pattern.compile("-?(([1-9][0-9]*)|0)?(\\.[0-9]*)?");
 
@@ -761,6 +796,7 @@ public class SampleController implements Initializable {
         });
     }
 
+    //region add block
 
     // Prida blok do formu
     private void AddBlockConstant(Integer colIndex, Integer rowIndex, BlockConstant block) {
@@ -827,6 +863,8 @@ public class SampleController implements Initializable {
         this.AddBlockSwitch(colIndex, rowIndex, block);
     }
 
+    //endregion
+
     //----------------------------
 
     @Override
@@ -854,12 +892,13 @@ public class SampleController implements Initializable {
         cellSizeScrollBar.valueProperty().setValue(100);
         Bindings.bindBidirectional(cellSizeLabel.textProperty(), CellSizeProperty, new NumberStringConverter());
 
-        for (Integer i = 0; i < 5; i++) {
+        for (Integer i = 0; i < 3; i++) {
             AddCol(gridPane);
         }
-        for (Integer i = 0; i < 5; i++) {
+        for (Integer i = 0; i < 3; i++) {
             AddRow(gridPane);
         }
 
     }
+
 }

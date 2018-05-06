@@ -87,6 +87,10 @@
 																shortcut="UP"/>
 										</accelerator>
 									</MenuItem>
+
+									<MenuItem fx:id="renameScheme" mnemonicParsing="false" onAction="#RenameSchema"
+											  text="Rename">
+									</MenuItem>
 									<MenuItem fx:id="exitScheme" mnemonicParsing="false" onAction="#ExitProgram"
 											  text="Exit">
 										<accelerator>
