@@ -25,13 +25,13 @@
 						AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
 						AnchorPane.topAnchor="0.0">
 				<content>
-					<BorderPane>
+					<BorderPane styleClass="center_borderpane">
 						<bottom>
-							<Button focusTraversable="false" maxWidth="Infinity" onMouseClicked="#AddRow_Click"
+							<Button styleClass="add_row" focusTraversable="false" maxWidth="Infinity" onMouseClicked="#AddRow_Click"
 									text="ADD ROW" textAlignment="CENTER" BorderPane.alignment="CENTER"/>
 						</bottom>
 						<right>
-							<Button focusTraversable="false" maxHeight="Infinity" onMouseClicked="#AddCol_Click"
+							<Button styleClass="add_col" focusTraversable="false" maxHeight="Infinity" onMouseClicked="#AddCol_Click"
 									text="A&#10;D&#10;D&#10;&#10;C&#10;O&#10;L&#10;" textAlignment="CENTER"
 									BorderPane.alignment="CENTER"/>
 						</right>
