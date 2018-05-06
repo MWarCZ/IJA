@@ -4,6 +4,7 @@ import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -31,11 +32,13 @@ import main.project.SaveLoader;
 import main.project.Schema;
 import main.project.SimulationEndException;
 import main.ui.component.BlockControl;
+import main.ui.component.SubAlert;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.Predicate;
@@ -98,6 +101,59 @@ public class SampleController implements Initializable {
         alert.setContentText(contentText);
 
         alert.showAndWait();
+    }
+
+    private void ShowResultDialog(Schema schema) {
+
+//        TextInputDialog tid = new TextInputDialog("1.0");
+//        tid.getEditor().setEditable(false);
+//        TextArea ta = new TextArea();
+//        ta.setText("ahoj\ncaw\nlul\n");
+//        ObservableList<Node> list = tid.getDialogPane().getChildren();
+//        tid.getDialogPane().getChildren().add(ta);
+//        tid.show();
+//        Dialog ddd = new Dialog();
+//        ddd.getDialogPane().getChildren().add(ta);
+//        ddd.show();
+
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Result info");
+        alert.setHeaderText("Results");
+        alert.getDialogPane().getStyleClass().add("result_dialog");
+        alert.getDialogPane().getStylesheets().add(
+            getClass().getResource("sample.css").toExternalForm());
+        Label label = (Label)alert.getDialogPane().getChildren().get(1);
+        label.setWrapText(false);
+
+        StringBuilder textResult = new StringBuilder();
+        textResult.append("Row Index | Value \n==================\n");
+
+        Integer rows = schema.GetCountRows();
+        for(Integer i = 0; i<rows; i++) {
+            Double value = schema.counter.GetValueOut(i);
+            textResult.append(String.format(
+                "%9d | %s\n", i, (value == null)?"Null":value.toString()
+            ));
+        }
+        alert.setContentText(textResult.toString());
+//        alert.getDialogPane().setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+//        alert.getDialogPane().getChildren().stream().filter(
+//            node -> node instanceof Label).forEach(
+//                node -> ((Label)node).setMinHeight(Region.USE_PREF_SIZE));
+
+        List<Node> node =alert.getDialogPane().getChildren();
+//        Pane pane = new Pane();
+//        ScrollPane spane = new ScrollPane(pane);
+//        Node temp = alert.getDialogPane().getChildren().get(1);
+//        pane.getChildren().add(temp);
+//        pane.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+//        spane.setPrefSize(200,300);
+//        alert.getDialogPane().getChildren().remove(1);
+////        alert.getDialogPane().getChildren().add(1,spane);
+//        alert.getDialogPane().setContent(spane);
+
+
+        alert.show();
     }
 
     /**
@@ -391,12 +447,18 @@ public class SampleController implements Initializable {
         ResetScheme();
         try {
             schema.SimulationRun();
+            System.out.println("Simulace skoncila.");
+            ShowResultDialog(schema);
         } catch (CycleException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
             System.out.println("Cycle - double port on one wire.");
+            ShowErrorDialog("Cycle detected",
+                "Some output ports are conected on same wire.");
         } catch (MissingValueException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
             System.out.println("Missing value on port.");
+            ShowErrorDialog("Missing value on port.",
+                "Some input port is not conected on output port.");
         } catch (SimulationEndException e) {
             System.out.println("Simulace skoncila.");
         }
@@ -425,10 +487,15 @@ public class SampleController implements Initializable {
             schema.SimulationStep();
         } catch (CycleException e) {
             System.out.println("Cycle - double port on one wire.");
+            ShowErrorDialog("Cycle detected",
+                "Some output ports are conected on same wire.");
         } catch (MissingValueException e) {
             System.out.println("Missing value on port.");
+            ShowErrorDialog("Missing value on port.",
+                "Some input port is not conected on output port.");
         } catch (SimulationEndException e) {
             System.out.println("Simulace skoncila.");
+            ShowResultDialog(schema);
             return;
         }
         ChangeColumnStyle(gridPane,schema.counter.GetCounter()
@@ -713,5 +780,6 @@ public class SampleController implements Initializable {
         for (Integer i = 0; i < 5; i++) {
             AddRow(gridPane);
         }
+
     }
 }

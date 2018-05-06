@@ -27,6 +27,13 @@ public class Counter {
         //this.counter = -1;
     }
 
+    public Map GetValueIn() {
+        return this.valueIn;
+    }
+    public Map GetValueOut() {
+        return this.valueOut;
+    }
+
     public void SetCounter(Integer value) {
         counterProperty.setValue(value);
     }

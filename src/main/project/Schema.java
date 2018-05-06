@@ -6,6 +6,7 @@ package main.project;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
+import main.blocks.Block;
 import main.manipulator.Counter;
 import main.manipulator.CycleException;
 import main.manipulator.IOperation;
@@ -129,6 +130,18 @@ public class Schema {
     }
 
 
+    public Integer GetCountRows() {
+        Integer nowMaxRowIndex = -1;
+        for(Integer i=0; i< GetCountBlocksColumns(); i++) {
+            for(IOperation io : GetBlocksColumn(i)) {
+                if(io instanceof Block) {
+                    Integer tmpIndex = ((Block)io).GetPositionEnd();
+                    if(tmpIndex > nowMaxRowIndex) nowMaxRowIndex = tmpIndex;
+                }
+            }
+        }
+        return nowMaxRowIndex+1;
+    }
     //endregion
 
     //region Functions for work with list of list of block
