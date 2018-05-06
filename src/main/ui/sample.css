@@ -1,4 +1,7 @@
-
+.nic {
+  -fx-background-color: #eaff00;
+}
+/*----*/
 .scroll-pane {
     -fx-background-color: black;
 }

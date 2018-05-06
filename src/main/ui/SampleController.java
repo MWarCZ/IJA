@@ -449,19 +449,31 @@ public class SampleController implements Initializable {
             schema.SimulationRun();
             System.out.println("Simulace skoncila.");
             ShowResultDialog(schema);
+            ResetScheme();
+            return;
         } catch (CycleException e) {
 //            e.printStackTrace();
             System.out.println("Cycle - double port on one wire.");
+            ChangeColumnStyle(gridPane,schema.counter.GetCounter()
+                ,"-fx-background-color: #eaff00;");
             ShowErrorDialog("Cycle detected",
                 "Some output ports are conected on same wire.");
         } catch (MissingValueException e) {
 //            e.printStackTrace();
             System.out.println("Missing value on port.");
+            ChangeColumnStyle(gridPane,schema.counter.GetCounter()
+                ,"-fx-background-color: #eaff00;");
             ShowErrorDialog("Missing value on port.",
                 "Some input port is not conected on output port.");
         } catch (SimulationEndException e) {
             System.out.println("Simulace skoncila.");
+            ResetScheme();
+            return;
         }
+
+        ChangeColumnStyle(gridPane,schema.counter.GetCounter()
+            ,"-fx-background-color: #eaff00;");
+        schema.SimulationReset();
     }
 
     @FXML
@@ -485,22 +497,31 @@ public class SampleController implements Initializable {
             ,"");
         try {
             schema.SimulationStep();
+            ChangeColumnStyle(gridPane,schema.counter.GetCounter()
+                ,"-fx-background-color: red;");
+            return;
         } catch (CycleException e) {
             System.out.println("Cycle - double port on one wire.");
+            ChangeColumnStyle(gridPane,schema.counter.GetCounter()
+                ,"-fx-background-color: #eaff00;");
             ShowErrorDialog("Cycle detected",
                 "Some output ports are conected on same wire.");
         } catch (MissingValueException e) {
             System.out.println("Missing value on port.");
+            ChangeColumnStyle(gridPane,schema.counter.GetCounter()
+                ,"-fx-background-color: #eaff00;");
             ShowErrorDialog("Missing value on port.",
                 "Some input port is not conected on output port.");
         } catch (SimulationEndException e) {
             System.out.println("Simulace skoncila.");
             ShowResultDialog(schema);
+            ResetScheme();
             return;
         }
-        ChangeColumnStyle(gridPane,schema.counter.GetCounter()
-            ,"-fx-background-color: red;");
 
+        ChangeColumnStyle(gridPane,schema.counter.GetCounter()
+            ,"-fx-background-color: #eaff00;");
+        schema.SimulationReset();
 
     }
 
