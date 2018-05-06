@@ -1,3 +1,10 @@
+/**
+ * Obsahuje tridu BlockConstant, ktera predstavuje blok uchovavajici konstntni hodnotu.
+ *
+ * @author Miroslav Válka (xvalka05)
+ * @author Jan Trněný (xtrnen03)
+ */
+
 package main.blocks;
 
 import javafx.beans.property.DoubleProperty;
@@ -8,8 +15,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -19,20 +24,42 @@ import java.util.Map;
  */
 public class BlockConstant extends Block {
 
+    /**
+     * Vlastnost uchovavajici hodnotu konstanty, kterou blok produkuje.
+     */
     public DoubleProperty constValueProperty = new SimpleDoubleProperty(0.0);
 
+    /**
+     * Konstruktor inicializuje vychozi hodnoty.
+     *
+     * @param positionStart Vychozi hodnota pocatecni pozice umisteni bloku.
+     * @param positionEnd   Vychozi hodnota konce pozice umisteni bloku.
+     */
     public BlockConstant(Integer positionStart, Integer positionEnd) {
         super(positionStart, positionEnd);
     }
 
+    /**
+     * Konstruktor inicializuje vychozi hodnoty.
+     */
     public BlockConstant() {
         super();
     }
 
+    /**
+     * Getter pro ziskani hodnoty ulozeny konstanty.
+     *
+     * @return Vraci hodnotu ulozene konstanty.
+     */
     public Double GetConstValue() {
         return constValueProperty.getValue();
     }
 
+    /**
+     * Setter pro nastaveni hodnoty konstanty.
+     *
+     * @param value Nova hodnota konstanty.
+     */
     public void SetConstValue(Double value) {
         constValueProperty.setValue(value);
     }

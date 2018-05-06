@@ -1,9 +1,19 @@
+/**
+ * Obsahuje rozhrani IDomSaveLoad.
+ * Rozhrani definuje funkce pro ulozeni a nacteni objektu do xml souboru.
+ *
+ * @author Miroslav Válka (xvalka05)
+ * @author Jan Trněný (xtrnen03)
+ */
 
 package main.project;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+/**
+ * Rozhrani definuje funkce pro ulozeni a nacteni objektu do xml souboru.
+ */
 public interface IDomSaveLoad {
   /**
    * Objekt se nacte z dodaneho elementu.

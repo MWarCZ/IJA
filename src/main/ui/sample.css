@@ -1,0 +1,61 @@
+.nic {
+  -fx-background-color: #eaff00;
+}
+/*----*/
+.scroll-pane {
+    -fx-background-color: black;
+}
+
+.scroll-bar:horizontal, .scroll-bar:vertical{
+    -fx-background-color:transparent;
+}
+
+.increment-button, .decrement-button {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.scroll-bar:horizontal .track,
+.scroll-bar:vertical .track{
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-background-radius: 0em;
+}
+
+.scroll-bar:horizontal .thumb,
+.scroll-bar:vertical .thumb {
+    -fx-background-color: #ff000c;
+    -fx-background-radius: 5em;
+}
+
+.scroll-pane > .corner {
+    -fx-background-color: black;
+}
+
+.schema_column {
+  -fx-background-color: #00b8ff;
+  -fx-opacity: 0.5;
+}
+/*----------------*/
+.result_dialog{
+  /*-fx-background-color: #f9d900;*/
+}
+.result_dialog > *.button-bar > *.container{
+  /*-fx-background-color: #a9e200;*/
+}
+.result_dialog > *.label.content{
+  /*-fx-font-size: 14px;*/
+  -fx-font-weight: bold;
+  -fx-font-size: 1.3em;
+  -fx-font-family: monospace;
+}
+.result_dialog:header *.header-panel{
+  /*-fx-background-color: #a59c31;*/
+}
+.result_dialog:header *.header-panel *.label{
+  /*-fx-font-size: 18px;*/
+  /*-fx-font-style: italic;*/
+  /*-fx-fill: #292929;*/
+  -fx-font-weight: bold;
+  -fx-font-size: 1.5em;
+}

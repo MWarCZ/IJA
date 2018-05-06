@@ -1,8 +1,14 @@
+/**
+ * Obsahuje tridu BlockAddSub, ktera predstavuje blok, ktery je schopen scitat i odcitat.
+ *
+ * @author Miroslav Válka (xvalka05)
+ * @author Jan Trněný (xtrnen03)
+ */
+
 package main.blocks;
 
 import javafx.collections.FXCollections;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -14,10 +20,19 @@ import java.util.Map;
  */
 public class BlockAddSub extends Block {
 
+    /**
+     * Konstruktor inicializuje vychozi hodnoty.
+     *
+     * @param positionStart Vychozi hodnota pocatecni pozice umisteni bloku.
+     * @param positionEnd   Vychozi hodnota konce pozice umisteni bloku.
+     */
     public BlockAddSub(Integer positionStart, Integer positionEnd) {
         super(positionStart, positionEnd);
     }
 
+    /**
+     * Konstruktor inicializuje vychozi hodnoty.
+     */
     public BlockAddSub() {
         super();
     }

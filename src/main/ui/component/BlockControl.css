@@ -1,0 +1,33 @@
+.button {
+  -fx-background-color: #ff8f00;
+  -fx-border-style: solid;
+  -fx-border-width: 2;
+  -fx-border-color: black;
+
+  -fx-text-fill: black;
+  -fx-font-family: "Arial Narrow";
+  -fx-font-weight: bold;
+  -fx-font-size: 1.7em;
+  -fx-label-padding: 0;
+  -fx-padding: 0;
+
+}
+
+.menu-item {
+  -fx-font-weight: normal;
+  -fx-font-size: 1em;
+}
+
+
+.addport {
+  -fx-opacity: 0.5;
+}
+.addport:hover {
+  -fx-opacity: 1.0;
+}
+.port {
+
+}
+.port:hover {
+  -fx-background-color: #fff500;
+}
