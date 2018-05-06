@@ -32,7 +32,6 @@ import main.project.SaveLoader;
 import main.project.Schema;
 import main.project.SimulationEndException;
 import main.ui.component.BlockControl;
-import main.ui.component.SubAlert;
 
 import java.io.File;
 import java.io.IOException;
@@ -47,6 +46,8 @@ import java.util.regex.Pattern;
 
 public class SampleController implements Initializable {
 
+    @FXML
+    public AnchorPane AnchorWrapper;
     @FXML
     private ScrollPane scrollPane;
     @FXML
@@ -74,6 +75,11 @@ public class SampleController implements Initializable {
     private ScrollBar cellSizeScrollBar;
     @FXML
     private Label cellSizeLabel;
+
+    private ContextMenu MenuInputValue;
+    private MenuItem MenuItemInputValue;
+    private ContextMenu MenuOutputValue;
+    private MenuItem MenuItemOutputValue;
 
     private DoubleProperty CellSizeProperty = new SimpleDoubleProperty();
 
@@ -156,6 +162,27 @@ public class SampleController implements Initializable {
         alert.show();
     }
 
+    public void xxx(BlockControl cc) {
+        // \delete pokus
+        cc.setOnMouseEntered(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                System.out.println("Mose entered.");
+
+                Bounds boundsInScreen = cc.localToScreen(cc.getBoundsInLocal());
+
+                MenuInputValue.show(AnchorWrapper,
+                    boundsInScreen.getMinX()-MenuInputValue.getWidth()/2,
+                    boundsInScreen.getMinY());
+
+                MenuOutputValue.show(AnchorWrapper,
+                    boundsInScreen.getMinX()+boundsInScreen.getWidth(),
+                    boundsInScreen.getMinY());
+            }
+
+        });
+    }
+
     /**
      * Vypsani pozice Radku a Sloupecku bunky do konzole.
      *
@@ -166,13 +193,20 @@ public class SampleController implements Initializable {
         Node source = (Node) e.getSource();
         Integer colIndex = GridPane.getColumnIndex(source);
         Integer rowIndex = GridPane.getRowIndex(source);
+
         System.out.println(String.format("Cell: [%d, %d]", colIndex, rowIndex));
         //System.out.printf("Mouse entered cell [%d, %d]%n", colIndex.intValue(), rowIndex.intValue());
+
+        System.out.println(String.format(
+            "X: %s, Y: %s", source.getLayoutX(), source.getLayoutY()
+        ));
     }
 
     private BlockControl AddCustomControl(GridPane parret, Integer colIndex, Integer rowIndex, Block block) {
         BlockControl cc = new BlockControl();
         cc.setBlock(block);
+        cc.setPortInValues(schema.counter.GetValueIn());
+        cc.setPortOutValues(schema.counter.GetValueOut());
 
         gridPane.add(cc, colIndex, rowIndex, 1, block.GetSize());
         cc.toFront();
@@ -280,6 +314,7 @@ public class SampleController implements Initializable {
                 cc.lineList.add(cc.cabel);
             }
         });
+
 
         return cc;
     }
@@ -428,6 +463,7 @@ public class SampleController implements Initializable {
         } else if (result.get() == buttonSave) {
             //SaveProgram();
             //Reload aplikace
+
         }
         //??
     }
@@ -436,6 +472,15 @@ public class SampleController implements Initializable {
         for( Node child : gridPane.getChildren()) {
             if(child instanceof Pane && GridPane.getColumnIndex(child) == column) {
                 child.setStyle(style);
+            }
+            if(child instanceof BlockControl) {
+                BlockControl bc = ((BlockControl)child);
+                if(GridPane.getColumnIndex(child) == column) {
+                    bc.showabilityProperty.setValue(true);
+                }
+                else {
+                    bc.showabilityProperty.setValue(false);
+                }
             }
         }
     }
@@ -499,6 +544,7 @@ public class SampleController implements Initializable {
             schema.SimulationStep();
             ChangeColumnStyle(gridPane,schema.counter.GetCounter()
                 ,"-fx-background-color: red;");
+
             return;
         } catch (CycleException e) {
             System.out.println("Cycle - double port on one wire.");
@@ -789,6 +835,15 @@ public class SampleController implements Initializable {
             new FileChooser.ExtensionFilter("XML", "*.xml"),
             new FileChooser.ExtensionFilter("All file", "*.*")
         );
+
+
+        MenuInputValue = new ContextMenu();
+        MenuItemInputValue = new MenuItem("Null");
+        MenuInputValue.getItems().add(MenuItemInputValue);
+
+        MenuOutputValue = new ContextMenu();
+        MenuItemOutputValue = new MenuItem("Null");
+        MenuOutputValue.getItems().add(MenuItemOutputValue);
 
         // Velikost bunky pro blok
         CellSizeProperty.bind(cellSizeScrollBar.valueProperty());

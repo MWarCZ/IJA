@@ -4,18 +4,21 @@ package main.ui.component;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.binding.DoubleBinding;
+import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.ContextMenuEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
@@ -29,9 +32,13 @@ import main.blocks.PortException;
  */
 public class BlockControl extends GridPane {
     public Block block;
+    public Map<Integer,Double> portInValues;
+    public Map<Integer,Double> portOutValues;
+
     public Line cabel;
     public Tooltip info;
     public ArrayList<Line> lineList = new ArrayList<>();
+
     protected Integer rows = 1;
 
     public List<Button> portsInButtons;
@@ -56,8 +63,13 @@ public class BlockControl extends GridPane {
     @FXML
     public Button rightButton;
 
-
     @FXML public StringProperty textProperty = new SimpleStringProperty("?");
+
+    public ContextMenu menuValue;
+    public MenuItem menuItemValue;
+    public StringProperty textValueProperty = new SimpleStringProperty("Null");
+    public BooleanProperty showabilityProperty = new SimpleBooleanProperty(false);
+
 
     public BlockControl() {
         this.portsInButtons = FXCollections.observableArrayList();
@@ -77,11 +89,23 @@ public class BlockControl extends GridPane {
         } catch (IOException exception) {
             throw new RuntimeException(exception);
         }
+        menuItemValue = new MenuItem();
+        menuValue = new ContextMenu(menuItemValue);
+        menuItemValue.textProperty().bind(this.textValueProperty);
+        menuValue.opacityProperty().bind(new DoubleBinding() {
+            {
+                // Specify the dependencies with super.bind()
+                super.bind(showabilityProperty);
+            }
+            @Override
+            protected double computeValue() {
+                return (showabilityProperty.getValue())?1.0:0.0;
+            }
+        });
 
         centerButton.textProperty().bind(textProperty);
     }
     // Zmeni velikost bloku - o kolikatiradkovy blok se bude jednat
-    //protected void ReSizeByBlock() {
     protected void ChangeRows(Integer start, Integer end) {
         rows = block.GetSize();
         if (rows <= 0) rows = 1;
@@ -198,6 +222,21 @@ public class BlockControl extends GridPane {
                 }
             });
 
+            portInButton.setOnMouseEntered(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent event) {
+                    if(showabilityProperty.getValue()) {
+                        Double value = portInValues.get(portInPosition);
+                        setTextValue( (value==null)?"Null":value.toString()  );
+                        Bounds boundsInScreen = portInButton.localToScreen(portInButton.getBoundsInLocal());
+                        menuValue.show(portInButton,
+                            boundsInScreen.getMinX(),
+                            boundsInScreen.getMaxY()
+                        );
+                    }
+                }
+            });
+
             this.portsInButtons.add(portInButton);
             this.add(portInButton, 0, i*3+1);
 
@@ -286,6 +325,23 @@ public class BlockControl extends GridPane {
                 }
             });
 
+            portOutButton.setOnMouseEntered(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent event) {
+                    if(showabilityProperty.getValue()) {
+                        Double value = portOutValues.get(portOutPosition);
+                        System.out.println(String.format("Enter: %d : %s",portOutPosition, value.toString()));
+                        setTextValue( (value==null)?"Null":value.toString()  );
+
+                        Bounds boundsInScreen = portOutButton.localToScreen(portOutButton.getBoundsInLocal());
+                        menuValue.show(portOutButton,
+                            boundsInScreen.getMinX(),
+                            boundsInScreen.getMaxY()
+                        );
+                    }
+                }
+            });
+
             this.portsOutButtons.add(portOutButton);
             this.add(portOutButton, 2, i*3+1);
         }
@@ -320,10 +376,14 @@ public class BlockControl extends GridPane {
         GridPane.setRowSpan(centerButton, rows * 3);
     }
 
-// <Button focusTraversable="false"
-// maxHeight="1.7976931348623157E308"
-// maxWidth="1.7976931348623157E308"
-// GridPane.columnIndex="2" GridPane.rowIndex="1" />
+
+    public String getTextValue() {
+        return this.textValueProperty.getValue();
+    }
+    public void setTextValue(String value) {
+        this.textValueProperty.setValue(value);
+    }
+
     public Block getBlock() {
         return this.block;
     }
@@ -331,6 +391,20 @@ public class BlockControl extends GridPane {
     public void setBlock(Block block) {
         this.block = block;
         ChangeRows(block.GetPositionStart(), block.GetPositionEnd());
+    }
+
+    public Map<Integer,Double> getPortInValues(){
+        return this.portInValues;
+    }
+    public void setPortInValues(Map<Integer,Double> values) {
+        this.portInValues = values;
+    }
+
+    public Map<Integer,Double> getPortOutValues(){
+        return this.portOutValues;
+    }
+    public void setPortOutValues(Map<Integer,Double> values) {
+        this.portOutValues = values;
     }
 
     public Integer getPositionStart() {
