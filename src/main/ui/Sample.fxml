@@ -123,13 +123,6 @@
 																shortcut="UP"/>
 										</accelerator>
 									</MenuItem>
-									<MenuItem fx:id="stopDebug" mnemonicParsing="false" onAction="#StopDebug"
-											  text="Stop">
-										<accelerator>
-											<KeyCodeCombination alt="UP" code="E" control="DOWN" meta="UP" shift="UP"
-																shortcut="UP"/>
-										</accelerator>
-									</MenuItem>
 								</items>
 							</Menu>
 						</menus>

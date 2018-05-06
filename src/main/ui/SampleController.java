@@ -1,3 +1,11 @@
+/**
+ * Obsahuje tridu SampleController.
+ * Jedna se o controler pro formular Sample.fxml.
+ * Obsahuje ovladani celeho formu.
+ *
+ * @author Miroslav Válka (xvalka05)
+ * @author Jan Trněný (xtrnen03)
+ */
 package main.ui;
 
 import javafx.application.Platform;
@@ -70,39 +78,54 @@ public class SampleController implements Initializable {
     private MenuItem resetScheme;
     @FXML
     private MenuItem debugScheme;
-    @FXML
-    private MenuItem stopDebug;
 
     @FXML
     private ScrollBar cellSizeScrollBar;
     @FXML
     private Label cellSizeLabel;
 
-    private ContextMenu MenuInputValue;
-    private MenuItem MenuItemInputValue;
-    private ContextMenu MenuOutputValue;
-    private MenuItem MenuItemOutputValue;
-
+    /**
+     * Vlastnost urcujici velikost bunky gridu do ktereho se vkladaji bloky.
+     */
     private DoubleProperty CellSizeProperty = new SimpleDoubleProperty();
 
     private File file;
     private FileChooser fileChooser = new FileChooser();
 
+    /**
+     * SaveLoader pro nacitani a ukladani schematu do xml souboru.
+     */
     private SaveLoader saveloader = new SaveLoader();
+    /**
+     * Schema do ktereho budou vkladany bloky a ktere bude nad nimi provadet vypocty.
+     */
     private Schema schema;
 
+    /**
+     * Prida novi radek do tabulky.
+     * @param mouseEvent Data o udalosti vyvolane misi.
+     */
     @FXML
     public void AddRow_Click(MouseEvent mouseEvent) {
         AddRow(gridPane);
     }
 
+    /**
+     * Prida novi sloupec do tabulky.
+     * @param mouseEvent Data o udalosti vyvolane misi.
+     */
     @FXML
     public void AddCol_Click(MouseEvent mouseEvent) {
         AddCol(gridPane);
     }
     // ---------------
 
-    private void ShowErrorDialog(String headerTest, String contentText){
+    /**
+     * Funkce vyvola chybove dialogove okno.
+     * @param headerTest Text hlavicky okna.
+     * @param contentText Text obsahu okna.
+     */
+    private void ShowErrorDialog(String headerTest, String contentText) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Error Dialog");
         alert.setHeaderText(headerTest);
@@ -111,6 +134,10 @@ public class SampleController implements Initializable {
         alert.showAndWait();
     }
 
+    /**
+     * Funkce vyvola dialogove okno s vypsanim vysledku vypoctu ulozenymi ve schematu.
+     * @param schema Schema s ulozenymi vysledky.
+     */
     private void ShowResultDialog(Schema schema) {
 
 //        TextInputDialog tid = new TextInputDialog("1.0");
@@ -126,21 +153,21 @@ public class SampleController implements Initializable {
 
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Result info");
-        alert.setHeaderText(String.format("'%s' results", schema.GetName() ));
+        alert.setHeaderText(String.format("'%s' results", schema.GetName()));
         alert.getDialogPane().getStyleClass().add("result_dialog");
         alert.getDialogPane().getStylesheets().add(
             getClass().getResource("sample.css").toExternalForm());
-        Label label = (Label)alert.getDialogPane().getChildren().get(1);
+        Label label = (Label) alert.getDialogPane().getChildren().get(1);
         label.setWrapText(false);
 
         StringBuilder textResult = new StringBuilder();
         textResult.append("Row Index | Value \n==================\n");
 
         Integer rows = schema.GetCountRows();
-        for(Integer i = 0; i<rows; i++) {
+        for (Integer i = 0; i < rows; i++) {
             Double value = schema.counter.GetValueOut(i);
             textResult.append(String.format(
-                "%9d | %s\n", i, (value == null)?"Null":value.toString()
+                "%9d | %s\n", i, (value == null) ? "Null" : value.toString()
             ));
         }
         alert.setContentText(textResult.toString());
@@ -164,26 +191,6 @@ public class SampleController implements Initializable {
         alert.show();
     }
 
-    public void xxx(BlockControl cc) {
-        // \delete pokus
-        cc.setOnMouseEntered(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                System.out.println("Mose entered.");
-
-                Bounds boundsInScreen = cc.localToScreen(cc.getBoundsInLocal());
-
-                MenuInputValue.show(AnchorWrapper,
-                    boundsInScreen.getMinX()-MenuInputValue.getWidth()/2,
-                    boundsInScreen.getMinY());
-
-                MenuOutputValue.show(AnchorWrapper,
-                    boundsInScreen.getMinX()+boundsInScreen.getWidth(),
-                    boundsInScreen.getMinY());
-            }
-
-        });
-    }
 
     /**
      * Vypsani pozice Radku a Sloupecku bunky do konzole.
@@ -203,6 +210,374 @@ public class SampleController implements Initializable {
             "X: %s, Y: %s", source.getLayoutX(), source.getLayoutY()
         ));
     }
+
+    //------------
+
+    /**
+     * Ukonci aplikaci a upozorni pred jejim ukoncenim.
+     */
+    @FXML
+    private void ExitProgram() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Exit");
+        alert.setHeaderText("Do you want to exit SchemeBuilder?");
+        alert.setContentText("Choose your option");
+
+        ButtonType buttonExit = new ButtonType("Exit");
+        ButtonType buttonSaveExit = new ButtonType("Save & Exit");
+        ButtonType buttonNo = new ButtonType("Nevermind");
+
+        alert.getButtonTypes().setAll(buttonExit, buttonSaveExit, buttonNo);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == buttonExit) {
+            Platform.exit();
+        } else if (result.get() == buttonSaveExit) {
+            SaveProgram();
+            Platform.exit();
+        }
+    }
+
+    /**
+     * Ulozi schema do souboru.
+     */
+    @FXML
+    private void SaveProgram() {
+        //Ulozeni programu!!
+        fileChooser.setTitle("Save schema to file");
+
+        // Pokud ve schematu je jeho umisteni, tak ho nacte.
+        if (schema.GetPath() != null && schema.GetPath() != "") {
+            File tmpFile = new File(schema.GetPath());
+            fileChooser.setInitialFileName(tmpFile.getName());
+
+            tmpFile = new File(tmpFile.getParent());
+            fileChooser.setInitialDirectory(tmpFile);
+        } else {
+            fileChooser.setInitialFileName(schema.GetName());
+        }
+
+        file = fileChooser.showSaveDialog(gridPane.getScene().getWindow());
+
+        if (file != null) {
+            try {
+                System.out.println(String.format("Start saving file '%s'", file.getPath()));
+
+                saveloader.WriteXML3(file.getPath(), schema);
+                schema.SetPath(file.getPath());
+                System.out.println(String.format("File '%s' is saved.", file.getPath()));
+            } catch (IOException e) {
+                e.printStackTrace();
+                ShowErrorDialog("Problem with save file.", "Ooops, there was an error! So sorry.");
+            }
+        }
+    }
+
+    /**
+     * Nacte schema ze souboru.
+     */
+    @FXML
+    private void LoadFile() {
+        fileChooser.setTitle("Open XML file");
+        file = fileChooser.showOpenDialog((Stage) gridPane.getScene().getWindow());
+
+        if (file != null) {
+            try {
+                System.out.println(String.format("Start loading file '%s'", file.getPath()));
+
+                schema = saveloader.ReadXML3(file.getPath());
+                System.out.println(String.format("File '%s' is loaded.", file.getPath()));
+
+                ReDrawSchema(gridPane, schema);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                ShowErrorDialog("Problem with open file.", "Ooops, there was an error! So sorry.");
+            }
+        }
+
+    }
+
+    // Znovuvytvori form ze schematu
+
+    /**
+     * Znovu vytvori tabulku ze schematu.
+     * @param gridPane Panel do ktereho bude opetovne vytvoreno schema.
+     * @param schema Schema s ulozenymi bloky, podle ktereho bude vytvorena tabulka.
+     */
+    private void ReDrawSchema(GridPane gridPane, Schema schema) {
+        // Vycisteni formu - gridu
+        Node settingNode = gridPane.getChildren().get(0);
+        gridPane.getChildren().clear();
+        gridPane.getRowConstraints().clear();
+        gridPane.getColumnConstraints().clear();
+        gridPane.getChildren().add(settingNode);
+
+        // Znovunaplneni formu (gridu) ze schematu
+        Integer maxRowIndex = 0;
+        Integer rowIndexNow = 0;
+        for (Integer i = 0; i < schema.GetCountBlocksColumns(); i++) {
+            AddCol(gridPane);
+            for (IOperation operation : schema.GetBlocksColumn(i)) {
+                // Zjistovani poctu radku
+                if (operation instanceof Block) {
+                    Integer tmpIndex = ((Block) operation).GetPositionEnd();
+                    if (tmpIndex > maxRowIndex) maxRowIndex = tmpIndex;
+
+                }
+                // Pridani bloku do formu
+                if (operation instanceof BlockConstant) {
+                    BlockConstant block = (BlockConstant) operation;
+                    AddBlockConstant(i, block.GetPositionStart(), block);
+                } else if (operation instanceof BlockAddSub) {
+                    BlockAddSub block = (BlockAddSub) operation;
+                    AddBlockAddSub(i, block.GetPositionStart(), block);
+                } else if (operation instanceof BlockMulDiv) {
+                    BlockMulDiv block = (BlockMulDiv) operation;
+                    AddBlockMulDiv(i, block.GetPositionStart(), block);
+                } else if (operation instanceof BlockSwitch) {
+                    BlockSwitch block = (BlockSwitch) operation;
+                    AddBlockSwitch(i, block.GetPositionStart(), block);
+                }
+                // \todo else ...
+            }
+        }
+        // Doplneni radku
+        for (Integer i = 0; i <= maxRowIndex; i++) {
+            AddRow(gridPane);
+        }
+    }
+
+    /**
+     * Funkce pro vytvoreni noveho schematu.
+     */
+    private void CreateNewSchema() {
+        TextInputDialog tid = new TextInputDialog(schema.GetName());
+        tid.setTitle("Create new schema");
+        tid.setHeaderText("Name");
+        Optional<String> result = tid.showAndWait();
+        if (result.isPresent()) {
+            // ok
+            schema = new Schema(tid.getEditor().getText());
+            ReDrawSchema(gridPane, schema);
+        }
+        for (Integer i = 0; i < 3; i++) {
+            AddCol(gridPane);
+        }
+        for (Integer i = 0; i < 2; i++) {
+            AddRow(gridPane);
+        }
+    }
+
+    /**
+     * Funkce pro vyvolani dialogu pred vytvorenim noveho schematu.
+     */
+    @FXML
+    private void Reload() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("New scheme");
+        alert.setHeaderText("Do you want new scheme? This one is going to be lost.");
+        alert.setContentText("Choose your option");
+
+        ButtonType buttonOk = new ButtonType("Create");
+        ButtonType buttonSave = new ButtonType("Save & Create");
+        ButtonType buttonNo = new ButtonType("Nevermind");
+
+        alert.getButtonTypes().setAll(buttonOk, buttonSave, buttonNo);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == buttonOk) {
+            //Reload aplikace
+            CreateNewSchema();
+        } else if (result.get() == buttonSave) {
+            SaveProgram();
+            CreateNewSchema();
+            //Reload aplikace
+        }
+        //??
+    }
+
+    /**
+     * Funkce pro zmeneni stylu panelu v jednom sloupecku tabulky.
+     * @param gridPane Panel/tabulka ve ktere budou hledani dani potomci.
+     * @param column Sloupecek pro ktery se bude nastavovat dana hodnota.
+     * @param style Styl ktery bude nastavovan dane hodnote.
+     */
+    private void ChangeColumnStyle(GridPane gridPane, Integer column, String style) {
+        for (Node child : gridPane.getChildren()) {
+            if (child instanceof Pane && GridPane.getColumnIndex(child) == column) {
+                child.setStyle(style);
+            }
+            if (child instanceof BlockControl) {
+                BlockControl bc = ((BlockControl) child);
+                if (GridPane.getColumnIndex(child) == column) {
+                    bc.showabilityProperty.setValue(true);
+                } else {
+                    bc.showabilityProperty.setValue(false);
+                }
+            }
+        }
+    }
+
+    /**
+     * Funkcde spusti vypocet bloku ve schematu.
+     */
+    @FXML
+    private void RunScheme() {
+        //vykonání bloků
+        //zvýraznění bloku při jeho výpočtu cc.centerButton.setStyle("-fx-border-color: #ff0000; -fx-border-width: 3px;")
+        ResetScheme();
+        try {
+            schema.SimulationRun();
+            System.out.println("Simulace skoncila.");
+            ShowResultDialog(schema);
+            ResetScheme();
+            ChangeColumnStyle(gridPane, -1, "");
+            return;
+        } catch (CycleException e) {
+//            e.printStackTrace();
+            System.out.println("Cycle - double port on one wire.");
+            ChangeColumnStyle(gridPane, schema.counter.GetCounter()
+                , "-fx-background-color: #eaff00;");
+            ShowErrorDialog("Cycle detected",
+                "Some output ports are conected on same wire.");
+        } catch (MissingValueException e) {
+//            e.printStackTrace();
+            System.out.println("Missing value on port.");
+            ChangeColumnStyle(gridPane, schema.counter.GetCounter()
+                , "-fx-background-color: #eaff00;");
+            ShowErrorDialog("Missing value on port.",
+                "Some input port is not conected on output port.");
+        } catch (SimulationEndException e) {
+            System.out.println("Simulace skoncila.");
+            ResetScheme();
+            return;
+        }
+
+        ChangeColumnStyle(gridPane, schema.counter.GetCounter()
+            , "-fx-background-color: #eaff00;");
+        schema.SimulationReset();
+        ChangeColumnStyle(gridPane, -1, "");
+    }
+
+    /**
+     * Funkce restartuje vypocty a vrati se na zacatek simulace.
+     */
+    @FXML
+    private void ResetScheme() {
+        //všechny výpočty se vrátí do původního stavu, tzn. všechny bloky nastavit na původní hodnoty
+
+        ChangeColumnStyle(gridPane, schema.counter.GetCounter()
+            , "");
+        schema.SimulationReset();
+        ChangeColumnStyle(gridPane, -1, "");
+    }
+
+    /**
+     * Postupne krokovani vypoctu, pekne sloupecek po sloupecku.
+     */
+    @FXML
+    private void DebugScheme() {
+        //Přidání buttonu pro krokování
+        //Button ccNext = new Button("Next");
+        //firstBorder.setLeft(ccNext);
+        //ccNext.setOnMouseClicked((event) -> System.out.println("HELO"));
+        //při kliknutí zvýraznění bloku + nad blokem dialog s hodnotamy před výpočtem a po výpočtu cc.centerButton.setStyle("-fx-border-color: #ff0000; -fx-border-width: 3px;")
+
+        ChangeColumnStyle(gridPane, schema.counter.GetCounter()
+            , "");
+        try {
+            schema.SimulationStep();
+            ChangeColumnStyle(gridPane, schema.counter.GetCounter()
+                , "-fx-background-color: red;");
+
+            return;
+        } catch (CycleException e) {
+            System.out.println("Cycle - double port on one wire.");
+            ChangeColumnStyle(gridPane, schema.counter.GetCounter()
+                , "-fx-background-color: #eaff00;");
+            ShowErrorDialog("Cycle detected",
+                "Some output ports are conected on same wire.");
+        } catch (MissingValueException e) {
+            System.out.println("Missing value on port.");
+            ChangeColumnStyle(gridPane, schema.counter.GetCounter()
+                , "-fx-background-color: #eaff00;");
+            ShowErrorDialog("Missing value on port.",
+                "Some input port is not conected on output port.");
+        } catch (SimulationEndException e) {
+            System.out.println("Simulace skoncila.");
+            ShowResultDialog(schema);
+            ResetScheme();
+            ChangeColumnStyle(gridPane, -1, "");
+            return;
+        }
+
+        ChangeColumnStyle(gridPane, schema.counter.GetCounter()
+            , "-fx-background-color: #eaff00;");
+        schema.SimulationReset();
+        ChangeColumnStyle(gridPane, -1, "");
+
+    }
+
+    /**
+     * Funkce pro prejmenovani schematu.
+     * @param actionEvent
+     */
+    @FXML
+    public void RenameSchema(ActionEvent actionEvent) {
+        TextInputDialog tid = new TextInputDialog(schema.GetName());
+        tid.setTitle("Rename schema");
+        tid.setHeaderText("New name");
+        Optional<String> result = tid.showAndWait();
+        if (result.isPresent()) {
+            // ok
+            schema.SetName(tid.getEditor().getText());
+        }
+    }
+
+    //----------------------------
+
+    /**
+     * Pridani noveho radku
+     * @param gridPane Tabulka do ktere bude pridan novy radek.
+     */
+    private void AddRow(GridPane gridPane) {
+        RowConstraints rc = new RowConstraints();
+        rc.setPrefHeight(100.0);
+        rc.prefHeightProperty().bind(CellSizeProperty);
+        rc.setVgrow(Priority.SOMETIMES);
+        gridPane.getRowConstraints().add(rc);
+
+        Integer rows = gridPane.getRowConstraints().size();
+        Integer cols = gridPane.getColumnConstraints().size();
+        if (rows > 0) {
+            for (Integer i = 0; i < cols; i++) {
+                AddPaneIntoCell(gridPane, i, rows - 1);
+            }
+        }
+
+    }
+
+    /**
+     * Pridani noveho slopce.
+     * @param gridPane Tabulka do ktere bude pridan novy sloupec.
+     */
+    private void AddCol(GridPane gridPane) {
+        ColumnConstraints cc = new ColumnConstraints();
+        cc.setPrefWidth(100.0);
+        cc.prefWidthProperty().bind(CellSizeProperty);
+        cc.setHgrow(Priority.SOMETIMES);
+        gridPane.getColumnConstraints().add(cc);
+
+        Integer rows = gridPane.getRowConstraints().size();
+        Integer cols = gridPane.getColumnConstraints().size();
+        if (cols > 0) {
+            for (Integer i = 0; i < rows; i++) {
+                AddPaneIntoCell(gridPane, cols - 1, i);
+            }
+        }
+    }
+
 
     private BlockControl AddCustomControl(GridPane parret, Integer colIndex, Integer rowIndex, Block block) {
         BlockControl cc = new BlockControl();
@@ -321,335 +696,6 @@ public class SampleController implements Initializable {
         return cc;
     }
 
-    //------------
-    @FXML
-    private void ExitProgram() {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Exit");
-        alert.setHeaderText("Do you want to exit SchemeBuilder?");
-        alert.setContentText("Choose your option");
-
-        ButtonType buttonExit = new ButtonType("Exit");
-        ButtonType buttonSaveExit = new ButtonType("Save & Exit");
-        ButtonType buttonNo = new ButtonType("Nevermind");
-
-        alert.getButtonTypes().setAll(buttonExit, buttonSaveExit, buttonNo);
-
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == buttonExit) {
-            Platform.exit();
-        } else if (result.get() == buttonSaveExit) {
-            SaveProgram();
-            Platform.exit();
-        }
-    }
-
-    @FXML
-    private void SaveProgram() {
-        //Ulozeni programu!!
-        fileChooser.setTitle("Save schema to file");
-
-        // Pokud ve schematu je jeho umisteni, tak ho nacte.
-        if(schema.GetPath() != null && schema.GetPath() != ""){
-            File tmpFile = new File(schema.GetPath());
-            fileChooser.setInitialFileName(tmpFile.getName());
-
-            tmpFile = new File(tmpFile.getParent());
-            fileChooser.setInitialDirectory(tmpFile);
-        }
-        else {
-            fileChooser.setInitialFileName(schema.GetName());
-        }
-
-        file = fileChooser.showSaveDialog(gridPane.getScene().getWindow());
-
-        if(file != null) {
-            try {
-                System.out.println(String.format("Start saving file '%s'", file.getPath()));
-
-                saveloader.WriteXML3(file.getPath(), schema);
-                schema.SetPath(file.getPath());
-                System.out.println(String.format("File '%s' is saved.", file.getPath()));
-            } catch (IOException e) {
-                e.printStackTrace();
-                ShowErrorDialog("Problem with save file.", "Ooops, there was an error! So sorry.");
-            }
-        }
-    }
-
-    @FXML
-    private void LoadFile() {
-        fileChooser.setTitle("Open XML file");
-        file = fileChooser.showOpenDialog((Stage) gridPane.getScene().getWindow());
-
-        if(file != null) {
-            try {
-                System.out.println(String.format("Start loading file '%s'", file.getPath()));
-
-                schema = saveloader.ReadXML3(file.getPath());
-                System.out.println(String.format("File '%s' is loaded.", file.getPath()));
-
-                ReDrawSchema(gridPane, schema);
-
-            } catch (IOException e) {
-                e.printStackTrace();
-                ShowErrorDialog("Problem with open file.", "Ooops, there was an error! So sorry.");
-            }
-        }
-
-    }
-
-    // Znovuvytvori form ze schematu
-    private void ReDrawSchema(GridPane gridPane, Schema schema){
-        // Vycisteni formu - gridu
-        Node settingNode = gridPane.getChildren().get(0);
-        gridPane.getChildren().clear();
-        gridPane.getRowConstraints().clear();
-        gridPane.getColumnConstraints().clear();
-        gridPane.getChildren().add(settingNode);
-
-        // Znovunaplneni formu (gridu) ze schematu
-        Integer maxRowIndex = 0;
-        Integer rowIndexNow = 0;
-        for(Integer i=0; i<schema.GetCountBlocksColumns(); i++) {
-            AddCol(gridPane);
-            for(IOperation operation :schema.GetBlocksColumn(i)) {
-                // Zjistovani poctu radku
-                if(operation instanceof Block) {
-                    Integer tmpIndex = ((Block)operation).GetPositionEnd();
-                    if(tmpIndex > maxRowIndex) maxRowIndex = tmpIndex;
-
-                }
-                // Pridani bloku do formu
-                if(operation instanceof BlockConstant) {
-                    BlockConstant block = (BlockConstant)operation;
-                    AddBlockConstant(i, block.GetPositionStart(), block );
-                }
-                else if(operation instanceof BlockAddSub) {
-                    BlockAddSub block = (BlockAddSub)operation;
-                    AddBlockAddSub(i, block.GetPositionStart(), block );
-                }
-                else if(operation instanceof BlockMulDiv) {
-                    BlockMulDiv block = (BlockMulDiv)operation;
-                    AddBlockMulDiv(i, block.GetPositionStart(), block );
-                }
-                else if(operation instanceof BlockSwitch) {
-                    BlockSwitch block = (BlockSwitch)operation;
-                    AddBlockSwitch(i, block.GetPositionStart(), block );
-                }
-                // \todo else ...
-            }
-        }
-        // Doplneni radku
-        for (Integer i = 0; i <= maxRowIndex; i++) {
-            AddRow(gridPane);
-        }
-    }
-
-    private void CreateNewSchema() {
-        TextInputDialog tid = new TextInputDialog(schema.GetName());
-        tid.setTitle("Create new schema");
-        tid.setHeaderText("Name");
-        Optional<String> result = tid.showAndWait();
-        if (result.isPresent()) {
-            // ok
-            schema = new Schema(tid.getEditor().getText());
-            ReDrawSchema(gridPane, schema);
-        }
-        for (Integer i = 0; i < 3; i++) {
-            AddCol(gridPane);
-        }
-        for (Integer i = 0; i < 3; i++) {
-            AddRow(gridPane);
-        }
-    }
-
-    @FXML
-    private void Reload() {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("New scheme");
-        alert.setHeaderText("Do you want new scheme? This one is going to be lost.");
-        alert.setContentText("Choose your option");
-
-        ButtonType buttonOk = new ButtonType("Create");
-        ButtonType buttonSave = new ButtonType("Save & Create");
-        ButtonType buttonNo = new ButtonType("Nevermind");
-
-        alert.getButtonTypes().setAll(buttonOk, buttonSave, buttonNo);
-
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == buttonOk) {
-            //Reload aplikace
-            CreateNewSchema();
-        } else if (result.get() == buttonSave) {
-            SaveProgram();
-            CreateNewSchema();
-            //Reload aplikace
-        }
-        //??
-    }
-
-    private void ChangeColumnStyle(GridPane gridPane, Integer column, String style) {
-        for( Node child : gridPane.getChildren()) {
-            if(child instanceof Pane && GridPane.getColumnIndex(child) == column) {
-                child.setStyle(style);
-            }
-            if(child instanceof BlockControl) {
-                BlockControl bc = ((BlockControl)child);
-                if(GridPane.getColumnIndex(child) == column) {
-                    bc.showabilityProperty.setValue(true);
-                }
-                else {
-                    bc.showabilityProperty.setValue(false);
-                }
-            }
-        }
-    }
-
-    @FXML
-    private void RunScheme() {
-        //vykonání bloků
-        //zvýraznění bloku při jeho výpočtu cc.centerButton.setStyle("-fx-border-color: #ff0000; -fx-border-width: 3px;")
-        ResetScheme();
-        try {
-            schema.SimulationRun();
-            System.out.println("Simulace skoncila.");
-            ShowResultDialog(schema);
-            ResetScheme();
-            ChangeColumnStyle(gridPane, -1, "");
-            return;
-        } catch (CycleException e) {
-//            e.printStackTrace();
-            System.out.println("Cycle - double port on one wire.");
-            ChangeColumnStyle(gridPane,schema.counter.GetCounter()
-                ,"-fx-background-color: #eaff00;");
-            ShowErrorDialog("Cycle detected",
-                "Some output ports are conected on same wire.");
-        } catch (MissingValueException e) {
-//            e.printStackTrace();
-            System.out.println("Missing value on port.");
-            ChangeColumnStyle(gridPane,schema.counter.GetCounter()
-                ,"-fx-background-color: #eaff00;");
-            ShowErrorDialog("Missing value on port.",
-                "Some input port is not conected on output port.");
-        } catch (SimulationEndException e) {
-            System.out.println("Simulace skoncila.");
-            ResetScheme();
-            return;
-        }
-
-        ChangeColumnStyle(gridPane,schema.counter.GetCounter()
-            ,"-fx-background-color: #eaff00;");
-        schema.SimulationReset();
-        ChangeColumnStyle(gridPane, -1, "");
-    }
-
-    @FXML
-    private void ResetScheme() {
-        //všechny výpočty se vrátí do původního stavu, tzn. všechny bloky nastavit na původní hodnoty
-
-        ChangeColumnStyle(gridPane,schema.counter.GetCounter()
-            ,"");
-        schema.SimulationReset();
-        ChangeColumnStyle(gridPane, -1, "");
-    }
-
-    @FXML
-    private void DebugScheme() {
-        //Přidání buttonu pro krokování
-        //Button ccNext = new Button("Next");
-        //firstBorder.setLeft(ccNext);
-        //ccNext.setOnMouseClicked((event) -> System.out.println("HELO"));
-        //při kliknutí zvýraznění bloku + nad blokem dialog s hodnotamy před výpočtem a po výpočtu cc.centerButton.setStyle("-fx-border-color: #ff0000; -fx-border-width: 3px;")
-
-        ChangeColumnStyle(gridPane,schema.counter.GetCounter()
-            ,"");
-        try {
-            schema.SimulationStep();
-            ChangeColumnStyle(gridPane,schema.counter.GetCounter()
-                ,"-fx-background-color: red;");
-
-            return;
-        } catch (CycleException e) {
-            System.out.println("Cycle - double port on one wire.");
-            ChangeColumnStyle(gridPane,schema.counter.GetCounter()
-                ,"-fx-background-color: #eaff00;");
-            ShowErrorDialog("Cycle detected",
-                "Some output ports are conected on same wire.");
-        } catch (MissingValueException e) {
-            System.out.println("Missing value on port.");
-            ChangeColumnStyle(gridPane,schema.counter.GetCounter()
-                ,"-fx-background-color: #eaff00;");
-            ShowErrorDialog("Missing value on port.",
-                "Some input port is not conected on output port.");
-        } catch (SimulationEndException e) {
-            System.out.println("Simulace skoncila.");
-            ShowResultDialog(schema);
-            ResetScheme();
-            ChangeColumnStyle(gridPane, -1, "");
-            return;
-        }
-
-        ChangeColumnStyle(gridPane,schema.counter.GetCounter()
-            ,"-fx-background-color: #eaff00;");
-        schema.SimulationReset();
-        ChangeColumnStyle(gridPane, -1, "");
-
-    }
-
-    @FXML
-    private void StopDebug() {
-        //if (firstBorder.getLeft() == null) return;
-        //firstBorder.setLeft(null);
-        ResetScheme();
-    }
-
-    @FXML
-    public void RenameSchema(ActionEvent actionEvent) {
-        TextInputDialog tid = new TextInputDialog(schema.GetName());
-        tid.setTitle("Rename schema");
-        tid.setHeaderText("New name");
-        Optional<String> result = tid.showAndWait();
-        if (result.isPresent()) {
-            // ok
-            schema.SetName(tid.getEditor().getText());
-        }
-    }
-
-    //----------------------------
-
-    private void AddRow(GridPane gridPane) {
-        RowConstraints rc = new RowConstraints();
-        rc.setPrefHeight(100.0);
-        rc.prefHeightProperty().bind(CellSizeProperty);
-        rc.setVgrow(Priority.SOMETIMES);
-        gridPane.getRowConstraints().add(rc);
-
-        Integer rows = gridPane.getRowConstraints().size();
-        Integer cols = gridPane.getColumnConstraints().size();
-        if (rows > 0) {
-            for (Integer i = 0; i < cols; i++) {
-                AddPaneIntoCell(gridPane, i, rows - 1);
-            }
-        }
-
-    }
-
-    private void AddCol(GridPane gridPane) {
-        ColumnConstraints cc = new ColumnConstraints();
-        cc.setPrefWidth(100.0);
-        cc.prefWidthProperty().bind(CellSizeProperty);
-        cc.setHgrow(Priority.SOMETIMES);
-        gridPane.getColumnConstraints().add(cc);
-
-        Integer rows = gridPane.getRowConstraints().size();
-        Integer cols = gridPane.getColumnConstraints().size();
-        if (cols > 0) {
-            for (Integer i = 0; i < rows; i++) {
-                AddPaneIntoCell(gridPane, cols - 1, i);
-            }
-        }
-    }
 
     private void AddPaneIntoCell(GridPane gridPane, Integer colIndex, Integer rowIndex) {
         // Vytvoreni prvniho panelu v bunce.
@@ -806,6 +852,7 @@ public class SampleController implements Initializable {
 
         System.out.println("Create new BlockConstant.");
     }
+
     // Vytvori blok a prida do formu
     private void AddNewBlockConstant(Integer colIndex, Integer rowIndex, Double value) {
         BlockConstant block = new BlockConstant();
@@ -823,6 +870,7 @@ public class SampleController implements Initializable {
         cc.textProperty.setValue("+-");
         System.out.println("Create new BlockAddSub.");
     }
+
     // Vytvori blok a prida do formu
     private void AddNewBlockAddSub(Integer colIndex, Integer rowIndex) {
         BlockAddSub block = new BlockAddSub();
@@ -839,6 +887,7 @@ public class SampleController implements Initializable {
         cc.textProperty.setValue("*/");
         System.out.println("Create new BlockMulDiv.");
     }
+
     // Vytvori blok a prida do formu
     private void AddNewBlockMulDiv(Integer colIndex, Integer rowIndex) {
         BlockMulDiv block = new BlockMulDiv();
@@ -854,6 +903,7 @@ public class SampleController implements Initializable {
         cc.textProperty.setValue("Switch");
         System.out.println("Create new BlockSwitch.");
     }
+
     // Vytvori blok a prida do formu
     private void AddNewBlockSwitch(Integer colIndex, Integer rowIndex) {
         BlockSwitch block = new BlockSwitch();
@@ -877,15 +927,6 @@ public class SampleController implements Initializable {
             new FileChooser.ExtensionFilter("XML", "*.xml"),
             new FileChooser.ExtensionFilter("All file", "*.*")
         );
-
-
-        MenuInputValue = new ContextMenu();
-        MenuItemInputValue = new MenuItem("Null");
-        MenuInputValue.getItems().add(MenuItemInputValue);
-
-        MenuOutputValue = new ContextMenu();
-        MenuItemOutputValue = new MenuItem("Null");
-        MenuOutputValue.getItems().add(MenuItemOutputValue);
 
         // Velikost bunky pro blok
         CellSizeProperty.bind(cellSizeScrollBar.valueProperty());
