@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<schema name="example2">
+<step order="0">
+<block class="main.blocks.BlockConstant">
+<position end="0" start="0"/>
+<out group="0">0</out>
+<value>5.5</value>
+</block>
+<block class="main.blocks.BlockConstant">
+<position end="1" start="1"/>
+<out group="0">1</out>
+<value>4.3</value>
+</block>
+</step>
+<step order="1">
+<block class="main.blocks.BlockConstant">
+<position end="2" start="2"/>
+<out group="0">2</out>
+<value>0.2</value>
+</block>
+<block class="main.blocks.BlockAddSub">
+<position end="1" start="0"/>
+<in group="0">1</in>
+<in group="0">0</in>
+<out group="0">1</out>
+</block>
+</step>
+<step order="2">
+<block class="main.blocks.BlockAddSub">
+<position end="2" start="1"/>
+<in group="0">1</in>
+<in group="0">2</in>
+<out group="0">2</out>
+</block>
+</step>
+</schema>
