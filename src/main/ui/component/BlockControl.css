@@ -31,3 +31,26 @@
 .port:hover {
   -fx-background-color: #fff500;
 }
+/*------------*/
+.context-menu {
+  -fx-background-color: black;
+  -fx-text-fill: white;
+  -fx-background-radius: 20;
+  -fx-border-color: white;
+  -fx-border-radius: 20;
+}
+.menu-item {
+  -fx-background-radius: 5;
+}
+.menu-item:focused {
+  -fx-background-color: transparent;
+
+}
+
+.menu-item .label {
+  -fx-text-fill: white;
+}
+
+.menu-item:focused .label {
+  -fx-text-fill: white;
+}

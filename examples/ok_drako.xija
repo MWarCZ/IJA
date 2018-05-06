@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<schema name="drako">
+<step order="0">
+<block class="main.blocks.BlockConstant">
+<position end="1" start="0"/>
+<out group="0">0</out>
+<out group="0">1</out>
+<value>100.0</value>
+</block>
+<block class="main.blocks.BlockConstant">
+<position end="3" start="3"/>
+<out group="0">3</out>
+<value>5.0</value>
+</block>
+<block class="main.blocks.BlockConstant">
+<position end="4" start="4"/>
+<out group="0">4</out>
+<value>10.0</value>
+</block>
+</step>
+<step order="1">
+<block class="main.blocks.BlockAddSub">
+<position end="1" start="0"/>
+<in group="0">0</in>
+<in group="0">1</in>
+<out group="0">1</out>
+</block>
+<block class="main.blocks.BlockMulDiv">
+<position end="4" start="3"/>
+<in group="0">4</in>
+<in group="1">3</in>
+<out group="0">3</out>
+</block>
+<block class="main.blocks.BlockConstant">
+<position end="2" start="2"/>
+<out group="0">2</out>
+<value>50.0</value>
+</block>
+</step>
+<step order="2">
+<block class="main.blocks.BlockAddSub">
+<position end="2" start="1"/>
+<in group="0">1</in>
+<in group="0">2</in>
+<out group="0">2</out>
+</block>
+<block class="main.blocks.BlockAddSub">
+<position end="3" start="3"/>
+<in group="1">3</in>
+<out group="0">3</out>
+</block>
+</step>
+<step order="3">
+<block class="main.blocks.BlockSwitch">
+<position end="4" start="0"/>
+<in group="0">2</in>
+<in group="1">3</in>
+<out group="0">4</out>
+<out group="1">3</out>
+<out group="0">1</out>
+<out group="1">0</out>
+</block>
+</step>
+<step order="4">
+<block class="main.blocks.BlockAddSub">
+<position end="1" start="0"/>
+<in group="0">0</in>
+<in group="0">1</in>
+<out group="0">1</out>
+</block>
+<block class="main.blocks.BlockMulDiv">
+<position end="4" start="3"/>
+<in group="0">4</in>
+<in group="1">3</in>
+<out group="0">3</out>
+</block>
+</step>
+<step order="5">
+<block class="main.blocks.BlockSwitch">
+<position end="3" start="1"/>
+<in group="1">3</in>
+<in group="0">1</in>
+<out group="1">1</out>
+<out group="1">3</out>
+<out group="0">2</out>
+</block>
+</step>
+<step order="6">
+<block class="main.blocks.BlockAddSub">
+<position end="3" start="1"/>
+<in group="0">3</in>
+<in group="0">2</in>
+<in group="0">1</in>
+<out group="0">2</out>
+</block>
+<block class="main.blocks.BlockConstant">
+<position end="4" start="4"/>
+<out group="0">4</out>
+<value>10.5</value>
+</block>
+<block class="main.blocks.BlockConstant">
+<position end="0" start="0"/>
+<out group="0">0</out>
+<value>0.25</value>
+</block>
+</step>
+<step order="7">
+<block class="main.blocks.BlockMulDiv">
+<position end="0" start="0"/>
+<in group="1">0</in>
+<out group="0">0</out>
+</block>
+<block class="main.blocks.BlockSwitch">
+<position end="2" start="2"/>
+<in group="0">2</in>
+<out group="0">2</out>
+</block>
+<block class="main.blocks.BlockAddSub">
+<position end="4" start="4"/>
+<in group="1">4</in>
+<out group="0">4</out>
+</block>
+</step>
+</schema>
