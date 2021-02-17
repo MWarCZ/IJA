@@ -1,6 +1,6 @@
 # Projekt do předmětu IJA
 
-## Inforamce
+## Informace
 * [Zadání projektu](zadani.md)
 * [Pokyny k projektu](pokyny_k_projektu.md)
 
